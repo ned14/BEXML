@@ -1,6 +1,6 @@
-# BEXML, a fast Bugs Everywhere parser with RESTful API and other issue tracker backends
-# (C) 2012 Niall Douglas http://www.nedproductions.biz/
-# Created: March 2012
+__all__ = ['be_dir', 'be_xml']
+# Don't modify the line above, or this line!
+import automodinit
+automodinit.automodinit(__name__, __file__, globals())
+del automodinit
 
-__all__ = ["be_dir"]
-import be_dir

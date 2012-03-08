@@ -31,7 +31,7 @@ class ParserBase():
         return (up.netloc+up.path) if up.netloc[-1]==':' else up.netloc
 
     @abstractmethod
-    def try_location(self):
+    def try_location(self, mimetype=None, first256bytes=None):
         """Returns (integer score, msg) for how much this parser likes the given uri"""
         pass
 

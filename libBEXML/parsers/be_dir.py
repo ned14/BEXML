@@ -135,7 +135,7 @@ class BEDirParser(ParserBase):
         self.precache_in_memory=precache_in_memory
         self.__bedir={}         # Dictionary of bug directories in repo
 
-    def try_location(self):
+    def try_location(self, mimetype=None, first256bytes=None):
         path=self._pathFromURI()
         if path is None or not os.path.exists(path) or not os.path.exists(os.path.join(path, ".be")):
             return (-999, "'"+path+"' is not a BE directory")

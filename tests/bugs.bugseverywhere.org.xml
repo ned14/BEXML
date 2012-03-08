@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<be-xml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
- xsi:noNamespaceSchemaLocation="bexml.xsd">
+<be-xml>
 <bug>
   <uuid>e22a9048-9a97-41b1-91a2-d4178c674b37</uuid>
   <short-name>bea/e22</short-name>

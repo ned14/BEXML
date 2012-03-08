@@ -19,5 +19,5 @@ setup(
     url='http://www.nedprod.com/programs/portable/bexml',
     packages=find_packages(),
     test_suite='tests',
-    install_requires=['automodinit', 'pyyaml', 'omnijson', 'ujson', 'web.py', 'mimerender'],
+    install_requires=['automodinit', 'pyyaml', 'omnijson', 'ujson', 'web.py', 'mimerender', 'lxml'],
     )

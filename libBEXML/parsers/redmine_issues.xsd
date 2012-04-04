@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="issues">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="issue"/>
+      </xs:sequence>
+      <xs:attribute name="limit" use="required" type="xs:integer"/>
+      <xs:attribute name="offset" use="required" type="xs:integer"/>
+      <xs:attribute name="total_count" use="required" type="xs:integer"/>
+      <xs:attribute name="type" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="issue">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="id"/>
+        <xs:element ref="project"/>
+        <xs:element ref="tracker"/>
+        <xs:element ref="status"/>
+        <xs:element ref="priority"/>
+        <xs:element ref="author"/>
+        <xs:element minOccurs="0" ref="assigned_to"/>
+        <xs:element minOccurs="0" ref="category"/>
+        <xs:element minOccurs="0" ref="fixed_version"/>
+        <xs:element minOccurs="0" ref="parent"/>
+        <xs:element ref="subject"/>
+        <xs:element ref="description"/>
+        <xs:element ref="start_date"/>
+        <xs:element ref="due_date"/>
+        <xs:element ref="done_ratio"/>
+        <xs:element ref="estimated_hours"/>
+        <xs:element minOccurs="0" ref="custom_fields"/>
+        <xs:element ref="created_on"/>
+        <xs:element ref="updated_on"/>
+      </xs:sequence>
+    </xs:complexType>
+    <xs:key name="issue_id">
+      <xs:selector xpath="id"/>
+      <xs:field xpath="."/>
+    </xs:key>
+    
+  </xs:element>
+  <xs:element name="id" type="xs:integer"/>
+  <xs:element name="project">
+    <xs:complexType>
+      <xs:attribute name="id" use="required" type="xs:integer"/>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="tracker">
+    <xs:complexType>
+      <xs:attribute name="id" use="required" type="xs:integer"/>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="status">
+    <xs:complexType>
+      <xs:attribute name="id" use="required" type="xs:integer"/>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="priority">
+    <xs:complexType>
+      <xs:attribute name="id" use="required" type="xs:integer"/>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="author">
+    <xs:complexType>
+      <xs:attribute name="id" use="required" type="xs:integer"/>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="assigned_to">
+    <xs:complexType>
+      <xs:attribute name="id" use="required" type="xs:integer"/>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="category">
+    <xs:complexType>
+      <xs:attribute name="id" use="required" type="xs:integer"/>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="fixed_version">
+    <xs:complexType>
+      <xs:attribute name="id" use="required" type="xs:integer"/>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="parent">
+    <xs:complexType>
+      <xs:attribute name="id" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="subject" type="xs:string"/>
+  <xs:element name="description" type="xs:string"/>
+  <xs:element name="start_date" type="xs:string"/>
+  <xs:element name="due_date" type="xs:string"/>
+  <xs:element name="done_ratio" type="xs:integer"/>
+  <xs:element name="estimated_hours" type="xs:string"/>
+  <xs:element name="custom_fields">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="custom_field"/>
+      </xs:sequence>
+      <xs:attribute name="type" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="custom_field">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="value"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="required" type="xs:integer"/>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="value" type="xs:string"/>
+  <xs:element name="created_on" type="xs:dateTime"/>
+  <xs:element name="updated_on" type="xs:dateTime"/>
+</xs:schema>

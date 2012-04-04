@@ -36,11 +36,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="bexmlsrv.py" />
+    <Compile Include="libBEXML\bexml.py" />
     <Compile Include="libBEXML\coerce_datetime.py" />
     <Compile Include="libBEXML\comment.py" />
     <Compile Include="libBEXML\issue.py" />
     <Compile Include="libBEXML\parserbase.py" />
     <Compile Include="libBEXML\parsers\be_dir.py" />
+    <Compile Include="libBEXML\parsers\be_xml.py" />
     <Compile Include="libBEXML\parsers\__init__.py" />
     <Compile Include="libBEXML\propertieddictionary.py" />
     <Compile Include="libBEXML\__init__.py" />

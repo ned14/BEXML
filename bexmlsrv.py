@@ -1,3 +1,4 @@
+#!/bin/sh
 # BEXML, a fast Bugs Everywhere parser with RESTful API and other issue tracker backends
 # (C) 2012 Niall Douglas http://www.nedproductions.biz/
 # Created: March 2012

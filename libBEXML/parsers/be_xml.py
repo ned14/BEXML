@@ -40,6 +40,7 @@ class BEXMLComment(CommentBase):
         self.isLoaded=True
         if len(notloaded)>0:
             log.warn("The following values from comment "+str(self.uuid)+" were not recognised: "+repr(notloaded))
+            self.extraFields=notloaded
         self.isDirty=False
 
 
@@ -75,6 +76,7 @@ class BEXMLIssue(IssueBase):
         self.isLoaded=True
         if len(notloaded)>0:
             log.warn("The following values from issue "+str(self.uuid)+" were not recognised: "+repr(notloaded))
+            self.extraFields=notloaded
         self.isDirty=False
 
 

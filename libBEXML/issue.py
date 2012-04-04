@@ -66,6 +66,7 @@ class Issue(PropertiedDictionary):
         self.__loaded=False
         self.__dirty=False
         self.__trackStaleness=False
+        self.__extra={}
         self._addProperty("uuid", "The uuid of the issue", lambda x: x if isinstance(x, UUID) else UUID(x), self.nullUUID)
         self._addProperty("short-name", "The short name of the issue", str, "")
         self._addProperty("severity", "The severity of the issue", self.__coerce_severity, "")
@@ -117,6 +118,14 @@ class Issue(PropertiedDictionary):
     def isStale(self):
         """True if the backing for this issue is newer than us"""
         pass
+
+    @property
+    def extraFields(self):
+        """Returns a dictionary containing any unrecognised items from when item was loaded"""
+        return self.__extra
+    @extraFields.setter
+    def extraFields(self, value):
+        self.__extra=value
 
     def addComment(self, comment):
         """Adds a comment to the issue"""

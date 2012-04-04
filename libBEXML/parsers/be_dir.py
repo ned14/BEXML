@@ -55,6 +55,7 @@ class BEDirComment(CommentBase):
         notloaded=self._load_mostly(values)
         if len(notloaded)>0:
             log.warn("The following values from comment '"+self.dirpath+"' were not recognised: "+repr(notloaded))
+            self.extraFields=notloaded
         self.isLoaded=True
         self.isDirty=False
         if self.tracksStaleness:
@@ -117,6 +118,7 @@ class BEDirIssue(IssueBase):
         notloaded=self._load_mostly(values)
         if len(notloaded)>0:
             log.warn("The following values from issue '"+self.dirpath+"' were not recognised: "+repr(notloaded))
+            self.extraFields=notloaded
         self.isLoaded=True
         self.isDirty=False
         if self.tracksStaleness:

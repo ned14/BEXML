@@ -63,6 +63,7 @@ class Comment(PropertiedDictionary):
         self.__loaded=False
         self.__dirty=False
         self.__trackStaleness=False
+        self.__extra={}
         self._addProperty("uuid", "The uuid of the comment", lambda x: x if isinstance(x, UUID) else UUID(x), self.nullUUID)
         self._addProperty("alt-id", "The alt-id of the comment", str, "")
         self._addProperty("short-name", "The short name of the comment", str, "")
@@ -112,6 +113,14 @@ class Comment(PropertiedDictionary):
     def isStale(self):
         """True if the file backing for this comment is newer than us"""
         pass
+
+    @property
+    def extraFields(self):
+        """Returns a dictionary containing any unrecognised items from when item was loaded"""
+        return self.__extra
+    @extraFields.setter
+    def extraFields(self, value):
+        self.__extra=value
 
     @abstractmethod
     def load(self, reload=False):

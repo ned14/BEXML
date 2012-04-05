@@ -7,7 +7,11 @@ from issue import Issue as IssueBase
 from comment import Comment as CommentBase
 
 import os, logging, urlparse, urllib2
-from abc import ABCMeta, abstractmethod, abstractproperty, abstractclassmethod
+from abc import ABCMeta, abstractmethod, abstractproperty
+try:
+    from abc import abstractclassmethod
+except:
+    from abstract3kmethodsfor2k import abstractclassmethod
 from lxml import etree
 from encodings import utf_8 as ironpython_utf8_override
 from collections import namedtuple
@@ -19,7 +23,7 @@ log=logging.getLogger(__name__)
 class XMLComment(CommentBase):
     """A comment loaded from an XML based repo"""
 
-    def __init__(self, parentIssue, commentelem, mapToBE={}, dontprocess=set(), mapFromBE={v:k for k, v in mapToBEXML.items()}):
+    def __init__(self, parentIssue, commentelem, mapToBE={}, dontprocess=set(), mapFromBE=None):
         """Initialises a new comment taken from an XML backing. mapToBE should be a dictionary
         mapping the source XML element tags to BE element names if necessary. Current BE comment
         fields:
@@ -33,6 +37,7 @@ class XMLComment(CommentBase):
         Content-type: mimetype string
         Body: string
         """
+        if mapFromBE is None: mapFromBe={v:k for k, v in mapToBE.items()}
         CommentBase.__init__(self, parentIssue)
         self.__element=commentelem
         self.__elementhash=0
@@ -69,7 +74,7 @@ class XMLComment(CommentBase):
 class XMLIssue(IssueBase):
     """An issue loaded from an XML based repo"""
 
-    def __init__(self, bugelem, mapToBE={'created':'time', 'extra-string':'extra-strings'}, dontprocess=set(['comment']), mapFromBE={v:k for k, v in mapToBEXML.items()}):
+    def __init__(self, bugelem, mapToBE={}, dontprocess=set(), mapFromBE=None):
         """Initialises a new issue taken from an XML backing. mapToBE should be a dictionary
         mapping the source XML element tags to BE element names if necessary. Current BE issue
         fields:
@@ -85,6 +90,7 @@ class XMLIssue(IssueBase):
         summary: string
         [extra-strings]: list of strings
         """
+        if mapFromBE is None: mapFromBe={v:k for k, v in mapToBE.items()}
         IssueBase.__init__(self)
         self.__element=bugelem
         self.__elementhash=0
@@ -121,6 +127,7 @@ class XMLIssue(IssueBase):
 
 class XMLParser(ParserBase):
     """Parses an XML based repo"""
+    xml_schema=None
 
     @abstractclassmethod
     def _schemapath(cls):
@@ -129,39 +136,43 @@ class XMLParser(ParserBase):
         return os.path.join(os.path.dirname(__file__), "bexml.xsd")
         """
         pass
-    xml_schema=etree.XMLSchema(file=_schemapath())
 
-    @abstractclassmethod
-    def _XMLIssue(cls, bugelem, **pars):
+    @abstractmethod
+    def _XMLIssue(self, bugelem, **pars):
         """Returns the XML issue implementation used by this implementation"""
         pass
 
-    def __init__(self, uri, encoding="utf-8", mapToBE={}, mapFromBE={v:k for k, v in mapToBEXML.items()}):
+    def __init__(self, uri, encoding="utf-8", mapToBE={}, mapFromBE=None):
         """Initialises a new XML repo parser. mapToBE should be a dictionary mapping the source
         XML element tags to BE element names if necessary. Current BE bug
         fields:
 
         bug: XMLIssue
         """
+        if mapFromBE is None: mapFromBe={v:k for k, v in mapToBE.items()}
         ParserBase.__init__(self, uri)
         self.__mapToBE=mapToBE
         self.__mapFromBE=mapFromBE
         self.source=None
         self.bugs={}
+        # Save creating an XMLSchema per instance by poking this into the derived class as a static variable
+        if self.xml_schema is None:
+            self.__class__.xml_schema=etree.XMLSchema(file=self._schemapath())
 
     @abstractmethod
     def try_location(self, mimetype=None, first256bytes=None):
         up=urlparse.urlparse(self.uri)
         data=None
+        score=0
         if up.scheme=="file":
             path=self._pathFromURI()
             if path[-4:]!='.xml':
                 return (-999, "'"+path+"' is not an XML file")
             if not os.path.isfile(path):
                 return (-998, "'"+path+"' is not a file")
+            score+=1
 
         # Is this a mimetype I can live with?
-        score=0
         if mimetype=="text/xml" or mimetype=="application/xml": score+=5
         return (score, None)
 
@@ -182,7 +193,8 @@ class XMLParser(ParserBase):
         if self.source is None:
             self.reload()
         if len(self.bugs)==0:
-            for _, bugelem in etree.iterparse(self.source, tag='bug' if 'bug' not in self.__mapToBE else self.__mapToBE['bug'], schema=self.xml_schema):
+            tag='bug' if 'bug' not in self.__mapToBE else self.__mapToBE['bug']
+            for _, bugelem in etree.iterparse(self.source, tag=tag, schema=self.xml_schema):
                 issue=self._XMLIssue(bugelem)
                 self.bugs[issue.uuid]=issue
                 if issuefilter is None or issue._match(issuefilter):

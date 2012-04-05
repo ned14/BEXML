@@ -1,4 +1,4 @@
-__all__ = ['bexml', 'coerce_datetime', 'comment', 'issue', 'parserbase', 'parsers', 'propertieddictionary']
+__all__ = ['abstract3kmethodsfor2k', 'bexml', 'coerce_datetime', 'comment', 'issue', 'parserbase', 'parsers', 'propertieddictionary', 'xmlparserbase']
 # Don't modify the line above, or this line!
 import automodinit
 automodinit.automodinit(__name__, __file__, globals())

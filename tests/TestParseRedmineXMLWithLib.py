@@ -2,18 +2,16 @@
 # BEXML, a fast Bugs Everywhere parser with RESTful API and other issue tracker backends
 # (C) 2012 Niall Douglas http://www.nedproductions.biz/
 # Created: March 2012
-#
-# Deliberately written to compile in IronPython and PyPy
 
 import sys, unittest
 if sys.path[0]!='.': sys.path.insert(0, '.')
 from LibTest import *
 
-class TestParseBErepoWithLib(TestParseWithLib, unittest.TestCase):
+class TestParseRedmineXMLWithLib(TestParseWithLib, unittest.TestCase):
 
     @property
     def repoURI(self):
-        return "file://tests/bugs.bugseverywhere.org"
+        return "file://tests/redmine.org.xml"
 
     @property
     def profile(self):
@@ -21,4 +19,4 @@ class TestParseBErepoWithLib(TestParseWithLib, unittest.TestCase):
 
 if __name__=="__main__":
     unittest.main()
-            
+    

@@ -20,7 +20,7 @@ class BEXMLIssue(XMLIssue):
     """An issue loaded from an XML based BE repo"""
 
     def __init__(self, bugelem):
-        XMLIssue.__init__(self, bugelem, mapToBE={'created':'time', 'extra-string':'extra-strings'}, dontprocess=set(['comment']))
+        XMLIssue.__init__(self, bugelem, mapToBE={'created':('time', lambda xmlelem:xmlelem.text), 'extra-string':('extra-strings', lambda xmlelem:xmlelem.text)}, dontprocess=set(['comment']))
         for valueelem in self.element.findall("comment"):
             if valueelem.tag=="comment":
                 self.addComment(BEXMLComment(self, valueelem))

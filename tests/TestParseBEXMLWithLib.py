@@ -5,56 +5,20 @@
 #
 # Deliberately written to compile in IronPython and PyPy
 
-import sys
+import sys, unittest
 if sys.path[0]!='.': sys.path.insert(0, '.')
-from libBEXML import BEXML
-import logging, time, unittest
+from LibTest import *
 
-class TestParseBEXMLWithLib(unittest.TestCase):
-    def setUp(self):
-        logging.basicConfig(level=logging.INFO)
-        start=time.time()
-        end=time.time()
-        self.emptyloop=end-start
+class TestParseBEXMLWithLib(TestParseWithLib, unittest.TestCase):
 
-    def test(self):
-        parser=BEXML("file://tests/bugs.bugseverywhere.org.xml")
-        print("Issues in the bugs everywhere repository:")
-        start=time.time()
-        parser.reload()
-        end=time.time()
-        print("Loading the bugs everywhere repository took %f secs" % (end-start-self.emptyloop))
+    @property
+    def repoURI(self):
+        return "file://tests/bugs.bugseverywhere.org.xml"
 
-        start=time.time()
-        issues=comments=0
-        for issue in parser.parseIssues():
-            issues+=1
-            issue.status
-            #print "  "+str(issue.uuid)+": "+issue.summary
-            for commentuuid in issue.comments:
-                comments+=1
-                issue.comments[commentuuid].alt_id
-        end=time.time()
-        print("Reading %d issues and %d comments from the bugs everywhere repository for the first time took %f secs" % (issues, comments, end-start-self.emptyloop))
-
-        start=time.time()
-        for issue in parser.parseIssues():
-            issue.status
-            for commentuuid in issue.comments:
-                issue.comments[commentuuid].alt_id
-        end=time.time()
-        print("Reading the bugs everywhere repository for the second time took %f secs" % (end-start-self.emptyloop))
-
-        print("\nIssues created by anyone called Steve:")
-        start=time.time()
-        n=0
-        for issue in parser.parseIssues("{{creator}}:{{Steve}}"):
-            n+=1
-            #print "  "+str(issue.uuid)+": "+issue.summary
-        end=time.time()
-        print("Reading %d items from the bugs everywhere repository for the first time took %f secs" % (n, end-start-self.emptyloop))
-
+    @property
+    def profile(self):
+        return False
 
 if __name__=="__main__":
     unittest.main()
-    
+        

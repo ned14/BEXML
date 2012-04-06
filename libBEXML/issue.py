@@ -48,6 +48,7 @@ class Issue(PropertiedDictionary):
     severities=["target",
             "wishlist",
             "minor",
+            "major",
             "serious",
             "critical",
             "fatal"]
@@ -57,6 +58,7 @@ class Issue(PropertiedDictionary):
             "test",
             "closed",
             "fixed",
+            "feedback",
             "wontfix"]
     nullUUID=UUID(int=0)
     nullDatetime=datetime.fromordinal(1)

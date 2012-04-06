@@ -30,8 +30,11 @@ def BEXML(uri, storageparser=None, **args):
                 mimetype=response.headers['Content-Type']
             except Exception(e):
                 log.warn("Failed to open '"+uri+"' because of "+e.message)
-        if have_magic and mimetype is None and first256bytes is not None:
-            mimetype=magic.Magic(mime=True).from_buffer(first256bytes)
+        if mimetype is None and first256bytes is not None:
+            if have_magic:
+                mimetype=magic.Magic(mime=True).from_buffer(first256bytes)
+            elif first256bytes.startswith('<?xml'):
+                mimetype="application/xml"
         log.info("From uri '"+uri+"' determined mimetype "+str(mimetype)+" from data '"+str(first256bytes)+"'")
 
         parser_instances=[parsers.__dict__[parser_module].instantiate(uri, **args) for parser_module in parsers.__all__]

@@ -25,8 +25,9 @@ class XMLComment(CommentBase):
 
     def __init__(self, parentIssue, commentelem, mapToBE={}, dontprocess=set(), mapFromBE=None):
         """Initialises a new comment taken from an XML backing. mapToBE should be a dictionary
-        mapping the source XML element tags to BE element names if necessary. Current BE comment
-        fields:
+        mapping the source XML element tags to BE element names and outputs if necessary i.e
+        mapToBE={'xmltag':('befield', lambda xmlelem:xmlelem.text)}
+        Current BE comment fields:
 
         uuid: UUID
         [alt-id]: string
@@ -37,7 +38,7 @@ class XMLComment(CommentBase):
         Content-type: mimetype string
         Body: string
         """
-        if mapFromBE is None: mapFromBe={v:k for k, v in mapToBE.items()}
+        if mapFromBE is None: mapFromBe={v[0]:(k, v[1]) for k, v in mapToBE.iteritems()}
         CommentBase.__init__(self, parentIssue)
         self.__element=commentelem
         self.__elementhash=0
@@ -56,16 +57,29 @@ class XMLComment(CommentBase):
     def element(self):
         """Returns the lxml element representing this XML backed comment"""
         return self.__element
+    @element.setter
+    def element(self, value):
+        self.__element=value
 
     def load(self, reload=False):
         """Loads in the comment from XML"""
         if not reload and self.isLoaded:
             return
-        values={valueelem.tag if valueelem.tag not in self.__mapToBE else self.__mapToBE[valueelem.tag]:valueelem.text for valueelem in self.__element if valueelem.tag not in self.__dontprocess}
+        values={}
+        for valueelem in self.__element:
+            if valueelem.tag not in self.__dontprocess:
+                if valueelem.tag not in self.__mapToBE :
+                    k=valueelem.tag
+                    v=valueelem.text
+                else:
+                    m=self.__mapToBE[valueelem.tag]
+                    k=m[0]
+                    v=m[1](valueelem)
+                values[k]=v
         notloaded=self._load_mostly(values)
         self.isLoaded=True
         if len(notloaded)>0:
-            log.warn("The following values from comment "+str(self.uuid)+" were not recognised: "+repr(notloaded))
+            #log.warn("The following values from comment "+str(self.uuid)+" were not recognised: "+repr(notloaded))
             self.extraFields=notloaded
         self.isDirty=False
         if self.tracksStaleness:
@@ -76,21 +90,22 @@ class XMLIssue(IssueBase):
 
     def __init__(self, bugelem, mapToBE={}, dontprocess=set(), mapFromBE=None):
         """Initialises a new issue taken from an XML backing. mapToBE should be a dictionary
-        mapping the source XML element tags to BE element names if necessary. Current BE issue
-        fields:
+        mapping the source XML element tags to BE element names and outputs if necessary i.e
+        mapToBE={'xmltag':('befield', lambda xmlelem:xmlelem.text)}
+        Current BE issue fields:
 
         uuid: UUID
         [short-name]: string
-        severity: string
-        status: string
+        severity: string from ["minor", "wishlist", "serious", "major", "critical", "fatal", "target"]
+        status: string from ["unconfirmed", "open", "test", "closed", "fixed", "feedback", "wontfix"]
         [assigned]: string
         [reporter]: string
         [creator]: string
-        time: datetime string
+        time: datetime string (e.g. Tue, 21 Jul 2009 18:32:12 +0000)
         summary: string
         [extra-strings]: list of strings
         """
-        if mapFromBE is None: mapFromBe={v:k for k, v in mapToBE.items()}
+        if mapFromBE is None: mapFromBe={v[0]:(k, v[1]) for k, v in mapToBE.iteritems()}
         IssueBase.__init__(self)
         self.__element=bugelem
         self.__elementhash=0
@@ -109,16 +124,29 @@ class XMLIssue(IssueBase):
     def element(self):
         """Returns the lxml element representing this XML backed issue"""
         return self.__element
+    @element.setter
+    def element(self, value):
+        self.__element=value
 
     def load(self, reload=False):
         """Loads in the issue from XML"""
         if not reload and self.isLoaded:
             return
-        values={valueelem.tag if valueelem.tag not in self.__mapToBE else self.__mapToBE[valueelem.tag]:valueelem.text for valueelem in self.__element if valueelem.tag not in self.__dontprocess}
+        values={}
+        for valueelem in self.__element:
+            if valueelem.tag not in self.__dontprocess:
+                if valueelem.tag not in self.__mapToBE :
+                    k=valueelem.tag
+                    v=valueelem.text
+                else:
+                    m=self.__mapToBE[valueelem.tag]
+                    k=m[0]
+                    v=m[1](valueelem)
+                values[k]=v
         notloaded=self._load_mostly(values)
         self.isLoaded=True
         if len(notloaded)>0:
-            log.warn("The following values from issue "+str(self.uuid)+" were not recognised: "+repr(notloaded))
+            #log.warn("The following values from issue "+str(self.uuid)+" were not recognised: "+repr(notloaded))
             self.extraFields=notloaded
         self.isDirty=False
         if self.tracksStaleness:
@@ -139,7 +167,15 @@ class XMLParser(ParserBase):
 
     @abstractmethod
     def _XMLIssue(self, bugelem, **pars):
-        """Returns the XML issue implementation used by this implementation"""
+        """Returns the XML issue implementation used by this implementation. Note that constructing
+        an XMLIssue is typically fairly heavy, so for speed consider instantiating a static copy and
+        returning a clone like this:
+        
+        def _XMLIssue(self, bugelem, **pars):
+            ret=copy(self.MyEmptyXMLIssue)
+            ret.element=bugelem
+            return ret
+        """
         pass
 
     def __init__(self, uri, encoding="utf-8", mapToBE={}, mapFromBE=None):
@@ -149,7 +185,7 @@ class XMLParser(ParserBase):
 
         bug: XMLIssue
         """
-        if mapFromBE is None: mapFromBe={v:k for k, v in mapToBE.items()}
+        if mapFromBE is None: mapFromBe={v:k for k, v in mapToBE.iteritems()}
         ParserBase.__init__(self, uri)
         self.__mapToBE=mapToBE
         self.__mapFromBE=mapFromBE

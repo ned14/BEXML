@@ -3,6 +3,7 @@
 # Created: March 2012
 
 from collections import namedtuple
+from copy import copy, deepcopy
 import re
 
 class Property:
@@ -41,6 +42,9 @@ class PropertiedDictionary(dict, object):
 
     A read-only property: x._addProperty("foo", default="value")
     An untyped property:  x._addProperty("foo", coercer=lambda x: x)
+
+    You can copy() this object, in which case it creates new storage for the
+    properties but links everything else including attributes.
     
     >>> x=PropertiedDictionary()
     >>> print x
@@ -107,9 +111,9 @@ class PropertiedDictionary(dict, object):
     None
     """
     
-    def __init__(self):
+    def __init__(self, *pars, **kpars):
         dict.__init__(self)
-        object.__init__(self)
+        object.__init__(self, *pars, **kpars)
 
     def __lookup(self, key, flatten=False):
         key=key.lower()
@@ -119,6 +123,29 @@ class PropertiedDictionary(dict, object):
         key=key.replace('_', '-')
         has=dict.has_key(self, key)
         return dict.__getitem__(self, key) if has else None
+
+    def __copy__(self):
+        """Shallow copies this PropertiedDictionary"""
+        ret=PropertiedDictionary()
+        ret.__class__=self.__class__
+        # Copy the dict part, making new storage
+        for k, v in dict.items(self):
+            dict.__setitem__(ret, k, copy(v))
+        # Link the object part
+        if hasattr(self, '__getstate__'):
+            state = self.__getstate__()
+        else:
+            state = self.__dict__
+        #state=state.copy()
+        if hasattr(ret, '__setstate__'):
+            ret.__setstate__(state)
+        else:
+            ret.__dict__.update(state)
+        return ret
+
+    def __hash__(self):
+        """Hashes this PropertiedDictionary"""
+        return hash(tuple(dict.items(self))) ^ object.__hash__(self)
 
 
     def _addProperty(self, name, docstring=None, coercer=None, default=None):

@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="bexmlsrv.py" />
+    <Compile Include="libBEXML\abstract3kmethodsfor2k.py" />
     <Compile Include="libBEXML\bexml.py" />
     <Compile Include="libBEXML\coerce_datetime.py" />
     <Compile Include="libBEXML\comment.py" />
@@ -43,12 +44,17 @@
     <Compile Include="libBEXML\parserbase.py" />
     <Compile Include="libBEXML\parsers\be_dir.py" />
     <Compile Include="libBEXML\parsers\be_xml.py" />
+    <Compile Include="libBEXML\parsers\redmine_issues.py" />
     <Compile Include="libBEXML\parsers\__init__.py" />
     <Compile Include="libBEXML\propertieddictionary.py" />
+    <Compile Include="libBEXML\xmlparserbase.py" />
     <Compile Include="libBEXML\__init__.py" />
     <Compile Include="setup.py" />
+    <Compile Include="tests\LibTest.py" />
     <Compile Include="tests\TestParseBErepoWithHTTP.py" />
     <Compile Include="tests\TestParseBErepoWithLib.py" />
+    <Compile Include="tests\TestParseBEXMLWithLib.py" />
+    <Compile Include="tests\TestParseRedmineXMLWithLib.py" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="tests\bugs.bugseverywhere.org.xml" />

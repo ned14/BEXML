@@ -3,7 +3,7 @@
 # Created: April 2012
 
 from libBEXML import BEXML
-import logging, time, unittest, cProfile, pstats
+import logging, time, unittest, cProfile, pstats, os
 from collections import namedtuple
 from abc import ABCMeta, abstractmethod, abstractproperty
 
@@ -13,14 +13,12 @@ log=logging.getLogger(__name__)
 start=time.time()
 while time.time()-start<2: pass # Prime SpeedStep
 start=time.time()
-for n in xrange(0, 100):
+for n in xrange(0, 100000):
     time.time()
 end=time.time()
 emptyloop=end-start
 del start, end, n
-emptyloop/=100
-log.info("Timing overhead is %f secs" % emptyloop)
-
+emptyloop/=100000.0
 
 def readRepo(parser, forceLoad=True, printSummaries=False, filter=None):
     issues=comments=0
@@ -55,16 +53,17 @@ def readRepo(parser, forceLoad=True, printSummaries=False, filter=None):
 
 class TestParseWithLib():
     __metaclass__=ABCMeta
+    profileEverything = False
 
     @abstractproperty
     def repoURI(self):
         """Returns the repo URI to use"""
         pass
 
-    @abstractproperty
+    @property
     def profile(self):
         """True if we should profile the test"""
-        pass
+        return self.profileEverything
 
     @abstractproperty
     def filter(self):
@@ -73,12 +72,14 @@ class TestParseWithLib():
 
     def setUp(self):
         logging.basicConfig(level=logging.INFO)
+        log.info("Timing overhead is %f secs" % emptyloop)
 
     def tearDown(self):
         if self.profile:
-            with open("cProfile.txt", "w") as oh:
+            with open("cProfile.txt", "a") as oh:
                 p=pstats.Stats('cProfile', stream=oh)
-                p.sort_stats('time').print_stats()
+                p.sort_stats('time').print_stats(20)
+                oh.write("\n\n")
 
     def test(self):
         start=time.time()
@@ -93,7 +94,7 @@ class TestParseWithLib():
         if self.profile:
             global timings2, parser2
             parser2=parser
-            cProfile.run("timings2=readRepo(parser2)", "cProfile")
+            cProfile.runctx("timings2=readRepo(parser2)", globals(), globals(), "cProfile")
             timings=timings2
         else:
             timings=readRepo(parser)
@@ -122,3 +123,11 @@ class TestParseWithLib():
         timings=readRepo(parser, filter="{{reporter}}:{{%s}}" % self.filter)
         print("Reading %d issues from the repository took %f secs to parse and %f secs to load" % (timings.issues, timings.issueparse, timings.issueload))
 
+
+if TestParseWithLib.profileEverything:
+    try:
+        os.remove("cProfile")
+    except: pass
+    try:
+        os.remove("cProfile.txt")
+    except: pass

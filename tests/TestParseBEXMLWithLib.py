@@ -16,10 +16,6 @@ class TestParseBEXMLWithLib(TestParseWithLib, unittest.TestCase):
         return "file://tests/bugs.bugseverywhere.org.xml"
 
     @property
-    def profile(self):
-        return False
-
-    @property
     def filter(self):
         return "Trevor"
 

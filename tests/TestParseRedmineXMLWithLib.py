@@ -14,10 +14,6 @@ class TestParseRedmineXMLWithLib(TestParseWithLib, unittest.TestCase):
         return "file://tests/redmine.org.xml"
 
     @property
-    def profile(self):
-        return False
-
-    @property
     def filter(self):
         return "John"
 

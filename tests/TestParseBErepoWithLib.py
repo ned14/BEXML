@@ -16,10 +16,6 @@ class TestParseBErepoWithLib(TestParseWithLib, unittest.TestCase):
         return "file://tests/bugs.bugseverywhere.org"
 
     @property
-    def profile(self):
-        return False
-
-    @property
     def filter(self):
         return "Trevor"
 

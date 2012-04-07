@@ -44,7 +44,10 @@ def readRepo(parser, forceLoad=False, printSummaries=False, filter=None):
     start=time.time()
     for issue in parser.parseIssues(issuefilter=filter):
         issues+=1
-        if printSummaries: print(repr("  "+str(issue.uuid)+": "+issue.summary))
+        if printSummaries:
+            print(repr("  "+str(issue.uuid)+": "+issue.summary))
+            for commentuuid in issue.comments:
+                print(repr("    * "+str(commentuuid)+": "+issue.comments[commentuuid].body))
     end=time.time()
     issueparsetaken+=end-start-emptyloop
     if forceLoad:

@@ -3,7 +3,7 @@
 # (C) 2012 Niall Douglas http://www.nedproductions.biz/
 # Created: March 2012
 #
-# Does about 1008 issues/sec
+# Does about 1065 issues/sec
 
 import sys, unittest
 if sys.path[0]!='.': sys.path.insert(0, '.')

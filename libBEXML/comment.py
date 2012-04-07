@@ -65,12 +65,12 @@ class Comment(PropertiedDictionary):
         self.__trackStaleness=False
         self.__extra={}
         self._addProperty("uuid", "The uuid of the comment", lambda x: x if isinstance(x, UUID) else UUID(x), self.nullUUID)
-        self._addProperty("alt-id", "The alt-id of the comment", str, "")
+        self._addProperty("Alt-id", "The alt-id of the comment", str, "")
         self._addProperty("short-name", "The short name of the comment", str, "")
-        self._addProperty("in-reply-to", "The uuid of the comment to which this comment replies", lambda x: x if isinstance(x, UUID) else UUID(x), self.nullUUID)
-        self._addProperty("author", "The author of the comment", unicode, u"")
-        self._addProperty("date", "When this comment was made", coerce_datetime, self.nullDatetime)
-        self._addProperty("content-type", "The content type of this comment", self.__coerce_content_type, "text/plain")
+        self._addProperty("In-reply-to", "The uuid of the comment to which this comment replies", lambda x: x if isinstance(x, UUID) else UUID(x), self.nullUUID)
+        self._addProperty("Author", "The author of the comment", unicode, u"")
+        self._addProperty("Date", "When this comment was made", coerce_datetime, self.nullDatetime)
+        self._addProperty("Content-type", "The content type of this comment", self.__coerce_content_type, "text/plain")
         self._addProperty("body", "The body of this comment", unicode, u"")
         self._load(*entries, **args)
 

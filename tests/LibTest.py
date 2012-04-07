@@ -70,7 +70,7 @@ def readRepo(parser, forceLoad=False, printSummaries=False, filter=None):
 
 class TestParseWithLib():
     __metaclass__=ABCMeta
-    profileEverything = False
+    profileEverything = True
 
     @abstractproperty
     def repoURI(self):
@@ -100,7 +100,7 @@ class TestParseWithLib():
             else:
                 with open("cProfile.txt", "a") as oh:
                     p=pstats.Stats('cProfile', stream=oh)
-                    p.sort_stats('time').print_stats(20)
+                    p.sort_stats('cumulative').print_stats(30)
                     oh.write("\n\n")
 
     def test(self):

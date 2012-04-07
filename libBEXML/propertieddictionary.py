@@ -117,7 +117,6 @@ class PropertiedDictionary(dict, object):
 
     #@lineprofile
     def __lookup(self, key, flatten=False):
-        key=key.lower()
         has=dict.has_key(self, key)
         if has or not flatten:
             return dict.__getitem__(self, key) if has else None
@@ -152,7 +151,6 @@ class PropertiedDictionary(dict, object):
     def _addProperty(self, name, docstring=None, coercer=None, default=None):
         """Declares a property with optional type coercer and optional default value.
         The type of default strongly sets the type of this property."""
-        name=name.lower()
         if dict.has_key(self, name):
             raise AttributeError, "Already have property "+name
         p=Property(name, docstring, coercer, default)
@@ -160,7 +158,6 @@ class PropertiedDictionary(dict, object):
 
     def _removeProperty(self, name):
         """Removes a property"""
-        name=name.lower()
         dict.__delitem__(self, name)
 
     def _isProperty(self, name):

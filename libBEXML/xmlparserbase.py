@@ -30,13 +30,13 @@ class XMLComment(CommentBase):
         Current BE comment fields:
 
         uuid: UUID
-        [alt-id]: string
+        [Alt-id]: string
         [short-name]: string
-        [in-reply-to]: UUID
+        [In-reply-to]: UUID
         Author: string
         Date: datetime string
         Content-type: mimetype string
-        Body: string
+        body: string
         """
         if mapFromBE is None: mapFromBe={v[0]:(k, v[1]) for k, v in mapToBE.iteritems()}
         CommentBase.__init__(self, parentIssue)

@@ -31,8 +31,8 @@ class RedmineXMLComment(XMLComment):
 
 
     def __init__(self, parentIssue, commentelem):
-        XMLComment.__init__(self, parentIssue, commentelem, mapToBE={'notes':       ('Body',   self.__mapBodyToBE),              # From journal
-                                                                     'description': ('Body',   self.__mapBodyToBE),              # From issue
+        XMLComment.__init__(self, parentIssue, commentelem, mapToBE={'notes':       ('body',   self.__mapBodyToBE),              # From journal
+                                                                     'description': ('body',   self.__mapBodyToBE),              # From issue
                                                                      'user':        ('Author', self.__mapAuthorToBE),            # From journal
                                                                      'author':      ('Author', self.__mapAuthorToBE),            # From issue
                                                                      'created_on':  ('Date',   lambda xmlelem:xmlelem.text),     # From journal and issue

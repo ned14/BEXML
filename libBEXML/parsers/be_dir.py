@@ -65,8 +65,8 @@ class BEDirComment(CommentBase):
 class BEDirIssue(IssueBase):
     """An issue loaded from a filing system based BE repo"""
 
-    def __init__(self, dirpath, encoding):
-        IssueBase.__init__(self)
+    def __init__(self, parser, dirpath, encoding):
+        IssueBase.__init__(self, parser)
         self.dirpath=dirpath
         self.encoding=encoding
         self.isLoaded=True
@@ -157,7 +157,7 @@ class BEDirParser(ParserBase):
 
     def __loadIssueAndComments(self, bug, bugspath):
         """Adds an unloaded issue and comments"""
-        self.__bedir[bugspath][bug]=bugitem=BEDirIssue(os.path.join(bugspath, bug), self.encoding)
+        self.__bedir[bugspath][bug]=bugitem=BEDirIssue(self, os.path.join(bugspath, bug), self.encoding)
         commentspath=os.path.join(bugspath, bug, "comments")
         if os.path.exists(commentspath):
             comments=filter(self.uuid_match.match, os.listdir(commentspath))

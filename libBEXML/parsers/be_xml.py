@@ -20,8 +20,8 @@ class BEXMLComment(XMLComment):
 class BEXMLIssue(XMLIssue):
     """An issue loaded from an XML based BE repo"""
 
-    def __init__(self, bugelem):
-        XMLIssue.__init__(self, bugelem, mapToBE={'created':('time', lambda xmlelem:xmlelem.text), 'extra-string':('extra-strings', lambda xmlelem:xmlelem.text)}, dontprocess=set(['comment']))
+    def __init__(self, parser, bugelem):
+        XMLIssue.__init__(self, parser, bugelem, mapToBE={'created':('time', lambda xmlelem:xmlelem.text), 'extra-string':('extra-strings', lambda xmlelem:xmlelem.text)}, dontprocess=set(['comment']))
 
     @XMLIssue.element.setter
     def element(self, value):
@@ -45,7 +45,7 @@ class BEXMLParser(XMLParser):
 
     def __init__(self, uri, encoding="utf-8"):
         XMLParser.__init__(self, uri, encoding)
-        self.BEXMLIssue=BEXMLIssue(None)
+        self.BEXMLIssue=BEXMLIssue(self, None)
 
     def try_location(self, mimetype=None, first256bytes=None):
         score, errmsg=XMLParser.try_location(self, mimetype, first256bytes)

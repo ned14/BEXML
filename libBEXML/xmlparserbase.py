@@ -88,7 +88,7 @@ class XMLComment(CommentBase):
 class XMLIssue(IssueBase):
     """An issue loaded from an XML based repo"""
 
-    def __init__(self, bugelem, mapToBE={}, dontprocess=set(), mapFromBE=None):
+    def __init__(self, parser, bugelem, mapToBE={}, dontprocess=set(), mapFromBE=None):
         """Initialises a new issue taken from an XML backing. mapToBE should be a dictionary
         mapping the source XML element tags to BE element names and outputs if necessary i.e
         mapToBE={'xmltag':('befield', lambda xmlelem:xmlelem.text)}
@@ -106,7 +106,7 @@ class XMLIssue(IssueBase):
         [extra-strings]: list of strings
         """
         if mapFromBE is None: mapFromBe={v[0]:(k, v[1]) for k, v in mapToBE.iteritems()}
-        IssueBase.__init__(self)
+        IssueBase.__init__(self, parser)
         self.__element=bugelem
         self.__elementhash=0
         self.__mapToBE=mapToBE
@@ -128,6 +128,7 @@ class XMLIssue(IssueBase):
     def element(self, value):
         self.__element=value
 
+    #@lineprofile
     def load(self, reload=False):
         """Loads in the issue from XML"""
         if not reload and self.isLoaded:
@@ -225,6 +226,7 @@ class XMLParser(ParserBase):
         else:
             self.source=urllib2.urlopen(self.uri)
 
+    #@lineprofile
     def parseIssues(self, issuefilter=None):
         if self.source is None:
             self.reload()

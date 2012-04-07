@@ -2,6 +2,21 @@
 # (C) 2012 Niall Douglas http://www.nedproductions.biz/
 # Created: April 2012
 
+import __builtin__
+line_profiler=None
+if 0:
+    try:
+        from line_profiler import LineProfiler
+        line_profiler=LineProfiler()
+        def runctx(cmd, globals, locals, file):
+            return line_profiler.runctx(cmd, globals, locals)
+        __builtin__.__dict__['lineprofile']=line_profiler
+    except: pass
+
+if line_profiler is None:
+    from cProfile import runctx
+    __builtin__.__dict__['lineprofile']=lambda x:x
+
 from libBEXML import BEXML
 import logging, time, unittest, cProfile, pstats, os
 from collections import namedtuple
@@ -20,7 +35,7 @@ emptyloop=end-start
 del start, end, n
 emptyloop/=100000.0
 
-def readRepo(parser, forceLoad=True, printSummaries=False, filter=None):
+def readRepo(parser, forceLoad=False, printSummaries=False, filter=None):
     issues=comments=0
     issueparsetaken=0
     issueloadtaken=0
@@ -28,27 +43,29 @@ def readRepo(parser, forceLoad=True, printSummaries=False, filter=None):
     commentloadtaken=0
     start=time.time()
     for issue in parser.parseIssues(issuefilter=filter):
-        end=time.time()
-        issueparsetaken+=end-start-emptyloop
         issues+=1
-        if forceLoad:
-            start=time.time()
-            issue.status
-            end=time.time()
-            issueloadtaken+=end-start-emptyloop
         if printSummaries: print(repr("  "+str(issue.uuid)+": "+issue.summary))
+    end=time.time()
+    issueparsetaken+=end-start-emptyloop
+    if forceLoad:
         start=time.time()
+        for issue in parser.parseIssues(issuefilter=filter):
+            issue.status
+        end=time.time()
+        issueloadtaken+=end-start-emptyloop
+    start=time.time()
+    for issue in parser.parseIssues(issuefilter=filter):
         for commentuuid in issue.comments:
-            end=time.time()
-            commentparsetaken+=end-start-emptyloop
             comments+=1
-            if forceLoad:
-                start=time.time()
-                issue.comments[commentuuid].alt_id
-                end=time.time()
-                commentloadtaken+=end-start-emptyloop
-            start=time.time()
+    end=time.time()
+    commentparsetaken+=end-start-emptyloop
+    if forceLoad:
         start=time.time()
+        for issue in parser.parseIssues(issuefilter=filter):
+           for commentuuid in issue.comments:
+                issue.comments[commentuuid].alt_id
+        end=time.time()
+        commentloadtaken+=end-start-emptyloop
     return namedtuple('ReadRepoTimings', ['issues', 'comments', 'issueparse', 'issueload', 'commentparse', 'commentload'])(issues=issues, comments=comments, issueparse=issueparsetaken, issueload=issueloadtaken, commentparse=commentparsetaken, commentload=commentloadtaken)
 
 class TestParseWithLib():
@@ -76,10 +93,15 @@ class TestParseWithLib():
 
     def tearDown(self):
         if self.profile:
-            with open("cProfile.txt", "a") as oh:
-                p=pstats.Stats('cProfile', stream=oh)
-                p.sort_stats('time').print_stats(20)
-                oh.write("\n\n")
+            if line_profiler is not None:
+                with open("lineProfile.txt", "a") as oh:
+                    line_profiler.print_stats(oh)
+                    oh.write("\n\n")
+            else:
+                with open("cProfile.txt", "a") as oh:
+                    p=pstats.Stats('cProfile', stream=oh)
+                    p.sort_stats('time').print_stats(20)
+                    oh.write("\n\n")
 
     def test(self):
         start=time.time()
@@ -94,7 +116,16 @@ class TestParseWithLib():
         if self.profile:
             global timings2, parser2
             parser2=parser
-            cProfile.runctx("timings2=readRepo(parser2)", globals(), globals(), "cProfile")
+            if line_profiler is not None:
+                log.info("Using line level profiler")
+                line_profiler.add_function(readRepo)
+            else:
+                log.info("Using function level profiler")
+            try:
+                runctx("timings2=readRepo(parser2)", globals(), globals(), "cProfile")
+            except:
+                self.tearDown()
+                raise
             timings=timings2
         else:
             timings=readRepo(parser)
@@ -129,5 +160,8 @@ if TestParseWithLib.profileEverything:
         os.remove("cProfile")
     except: pass
     try:
-        os.remove("cProfile.txt")
+        if line_profiler is None:
+            os.remove("cProfile.txt")
+        else:
+            os.remove("lineProfile.txt")
     except: pass

@@ -1,0 +1,32 @@
+Sat Apr 07 21:04:40 2012    cProfile
+
+         6763993 function calls (6337524 primitive calls) in 12.055 seconds
+
+   Ordered by: internal time
+   List reduced from 224 to 20 due to restriction <20>
+
+   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
+   946366    1.329    0.000    1.742    0.000 .\libBEXML\propertieddictionary.py:118(__lookup)
+293247/67599    0.711    0.000    6.781    0.000 .\libBEXML\propertieddictionary.py:224(__setattr__)
+    19316    0.659    0.000   12.037    0.001 .\libBEXML\xmlparserbase.py:228(parseIssues)
+    19008    0.598    0.000    2.545    0.000 .\libBEXML\propertieddictionary.py:189(_load_mostly)
+    74808    0.558    0.000    0.807    0.000 .\libBEXML\propertieddictionary.py:152(_addProperty)
+    96570    0.461    0.000    0.914    0.000 f:\python27\lib\copy.py:123(_copy_inst)
+   405594    0.439    0.000    0.624    0.000 {hasattr}
+    19008    0.429    0.000    0.785    0.000 f:\python27\lib\_strptime.py:295(_strptime)
+     9657    0.420    0.000    3.182    0.000 .\libBEXML\xmlparserbase.py:131(load)
+    19008    0.407    0.000    0.501    0.000 f:\python27\lib\uuid.py:101(__init__)
+     9351    0.377    0.000    2.406    0.000 .\libBEXML\xmlparserbase.py:64(load)
+187020/121563    0.375    0.000    3.627    0.000 .\libBEXML\comment.py:148(__setattr__)
+   634184    0.295    0.000    0.295    0.000 {method 'replace' of 'str' objects}
+    19008    0.283    0.000    0.390    0.000 f:\python27\lib\uuid.py:202(get_bytes)
+  1040231    0.277    0.000    0.277    0.000 {method 'lower' of 'str' objects}
+     9657    0.277    0.000    1.644    0.000 .\libBEXML\propertieddictionary.py:128(__copy__)
+   321912    0.257    0.000    0.730    0.000 .\libBEXML\propertieddictionary.py:166(_isProperty)
+    28359    0.242    0.000    1.344    0.000 .\libBEXML\coerce_datetime.py:8(coerce_datetime)
+96570/57942    0.193    0.000    6.975    0.000 .\libBEXML\issue.py:178(__setattr__)
+    19008    0.175    0.000    1.129    0.000 f:\python27\lib\uuid.py:549(uuid5)
+
+
+
+

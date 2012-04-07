@@ -115,6 +115,7 @@ class PropertiedDictionary(dict, object):
         dict.__init__(self)
         object.__init__(self, *pars, **kpars)
 
+    #@lineprofile
     def __lookup(self, key, flatten=False):
         key=key.lower()
         has=dict.has_key(self, key)
@@ -185,6 +186,7 @@ class PropertiedDictionary(dict, object):
                 raise KeyError, "Property "+key+" not present in this dictionary"
             p.value=p.coercer(args[key])
 
+    #@lineprofile
     def _load_mostly(self, *entries, **args):
         """Loads in a set of values from arguments or a dictionary, returning those not loaded"""
         if len(entries)==0 and len(args)==0: return

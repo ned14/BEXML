@@ -14,8 +14,41 @@ class RedmineXMLComment(XMLComment):
     """A comment loaded from an XML based Redmine repo"""
     uuid_namespace=uuid.UUID('{63913f93-2c8d-4f95-9619-f54f52514ef4}') # Used to generated a unique UUID from unique comment id
 
+    def __mapBodyToBE(self, xmlelem):
+        """Maps a Redmine comment body"""
+        self.content_type="text/plain"
+        return xmlelem.text
+
+    def __mapAuthorToBE(self, xmlelem):
+        """Maps a Redmine author to BE reporter"""
+        id=int(xmlelem.attrib['id'])
+        if id in self.parentParser.issueauthorids:
+            return self.parentParser.issueauthorids[id][1]
+        name=xmlelem.attrib['name']
+        BEname='"%s" (id:%d)' % (name, id)
+        self.parentParser.issueauthorids[id]=(name, BEname)
+        return BEname
+
+
     def __init__(self, parentIssue, commentelem):
-        XMLComment.__init__(self, parentIssue, commentelem)
+        XMLComment.__init__(self, parentIssue, commentelem, mapToBE={'notes':       ('Body',   self.__mapBodyToBE),              # From journal
+                                                                     'description': ('Body',   self.__mapBodyToBE),              # From issue
+                                                                     'user':        ('Author', self.__mapAuthorToBE),            # From journal
+                                                                     'author':      ('Author', self.__mapAuthorToBE),            # From issue
+                                                                     'created_on':  ('Date',   lambda xmlelem:xmlelem.text),     # From journal and issue
+                                                                     }, dontprocess=set())
+        if commentelem.tag=="journal":
+            self.__commentType=1
+            self.redmine_id=int(commentelem.attrib['id'])
+            self.parentParser.journalids[self.redmine_id]=self
+            self.uuid=uuid.uuid5(self.uuid_namespace, str(self.redmine_id))
+        elif commentelem.tag=="issue":
+            self.__commentType=0
+            self.redmine_id=int(commentelem.find("id").text)
+            self.uuid=uuid.uuid5(parentIssue.uuid_namespace, str(self.redmine_id))
+        else:
+            raise Exception("Unknown comment type '"+commentelem.tag+"'")
+        #print("Added comment "+str(self.uuid)+" type "+str(self.__commentType))
 
 
 class RedmineXMLIssue(XMLIssue):
@@ -27,50 +60,57 @@ class RedmineXMLIssue(XMLIssue):
     def __mapIDToBE(self, xmlelem):
         """Maps a Redmine id to BE uuid"""
         self.redmine_id=int(xmlelem.text)
-        assert self.redmine_id not in self.__parentparser.issueids
-        self.__parentparser.issueids[self.redmine_id]=self
+        assert self.redmine_id not in self.parentParser.issueids
+        self.parentParser.issueids[self.redmine_id]=self
         return uuid.uuid5(self.uuid_namespace, str(self.redmine_id))
 
     def __mapStatusToBE(self, xmlelem):
         """Maps a Redmine status to BE status"""
         id=int(xmlelem.attrib['id'])
-        if id in self.__parentparser.issuestatusids:
-            return self.__parentparser.issuestatusids[id][1]
+        if id in self.parentParser.issuestatusids:
+            return self.parentParser.issuestatusids[id][1]
         name=xmlelem.attrib['name']
         BEname=self.mapStatusToBE[name] if name in self.mapStatusToBE else ""
-        self.__parentparser.issuestatusids[id]=(name, BEname)
+        self.parentParser.issuestatusids[id]=(name, BEname)
         return BEname
 
     def __mapPriorityToBE(self, xmlelem):
         """Maps a Redmine priority to BE severity"""
         id=int(xmlelem.attrib['id'])
-        if id in self.__parentparser.issuepriorityids:
-            return self.__parentparser.issuepriorityids[id][1]
+        if id in self.parentParser.issuepriorityids:
+            return self.parentParser.issuepriorityids[id][1]
         name=xmlelem.attrib['name']
         BEname=self.mapPriorityToBE[name] if name in self.mapPriorityToBE else ""
-        self.__parentparser.issuepriorityids[id]=(name, BEname)
+        self.parentParser.issuepriorityids[id]=(name, BEname)
         return BEname
 
     def __mapAuthorToBE(self, xmlelem):
         """Maps a Redmine author to BE reporter"""
         id=int(xmlelem.attrib['id'])
-        if id in self.__parentparser.issueauthorids:
-            return self.__parentparser.issueauthorids[id][1]
+        if id in self.parentParser.issueauthorids:
+            return self.parentParser.issueauthorids[id][1]
         name=xmlelem.attrib['name']
         BEname='"%s" (id:%d)' % (name, id)
-        self.__parentparser.issueauthorids[id]=(name, BEname)
+        self.parentParser.issueauthorids[id]=(name, BEname)
         return BEname
 
-    def __init__(self, parentparser, bugelem):
-        self.__parentparser=parentparser
-        XMLIssue.__init__(self, bugelem, mapToBE={'id'        :('uuid',     self.__mapIDToBE),
-                                                  'status'    :('status',   self.__mapStatusToBE),
-                                                  'priority'  :('severity', self.__mapPriorityToBE),
-                                                  'author'    :('reporter', self.__mapAuthorToBE),
-                                                  'subject'   :('summary',  lambda xmlelem:xmlelem.text),
-                                                  'created_on':('time',     lambda xmlelem:xmlelem.text),
-                                                  }, dontprocess=set(['description']))
+    def __init__(self, parser, bugelem):
+        XMLIssue.__init__(self, parser, bugelem, mapToBE={'id'        :('uuid',     self.__mapIDToBE),
+                                                          'status'    :('status',   self.__mapStatusToBE),
+                                                          'priority'  :('severity', self.__mapPriorityToBE),
+                                                          'author'    :('reporter', self.__mapAuthorToBE),
+                                                          'subject'   :('summary',  lambda xmlelem:xmlelem.text),
+                                                          'created_on':('time',     lambda xmlelem:xmlelem.text),
+                                                          }, dontprocess=set(['description']))
         self.redmine_id=None
+
+    @XMLIssue.element.setter
+    def element(self, value):
+        XMLIssue.element.fset(self, value)
+        # In Redmine, each issue comes with a long description field. Map that to first comment in BE
+        descriptionelem=self.element.find("description")
+        if descriptionelem is not None and descriptionelem.text is not None:
+            self.addComment(RedmineXMLComment(self, self.element))
 
 
 class RedmineXMLParser(XMLParser):
@@ -88,6 +128,7 @@ class RedmineXMLParser(XMLParser):
     def __init__(self, uri, encoding="utf-8"):
         XMLParser.__init__(self, uri, encoding, mapToBE={'bug':'issue'})
         self.issueids={}
+        self.journalids={}
         self.issuestatusids={} # Keep a map of issue statuses to ids as these can vary between Redmines
         self.issuepriorityids={} # Ditto
         self.issueauthorids={} # Ditto

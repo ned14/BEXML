@@ -63,8 +63,9 @@ class Issue(PropertiedDictionary):
     nullUUID=UUID(int=0)
     nullDatetime=datetime.fromordinal(1)
 
-    def __init__(self, *entries, **args):
+    def __init__(self, parentParser, *entries, **args):
         PropertiedDictionary.__init__(self)
+        self.__parent=parentParser
         self.__loaded=False
         self.__dirty=False
         self.__trackStaleness=False
@@ -82,6 +83,11 @@ class Issue(PropertiedDictionary):
         self.comments={}
         self._load(*entries, **args)
 
+    def __copy__(self):
+        ret=PropertiedDictionary.__copy__(self)
+        ret.comments={}
+        return ret
+
     def __coerce_severity(self, v):
         v=str(v)
         assert v=="" or v in self.severities
@@ -91,6 +97,11 @@ class Issue(PropertiedDictionary):
         v=str(v)
         assert v=="" or v in self.statuses
         return v
+
+    @property
+    def parentParser(self):
+        """Returns the parser to which this issue belongs"""
+        return self.__parent
 
     @property
     def isLoaded(self):

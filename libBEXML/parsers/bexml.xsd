@@ -28,22 +28,10 @@
       <xs:selector xpath="uuid"/>
       <xs:field xpath="."/>
     </xs:key>    
-    <xs:key name="bug_short-name">
-      <xs:selector xpath="short-name"/>
-      <xs:field xpath="."/>
-    </xs:key>
     <xs:key name="comment_uuid">
       <xs:selector xpath="comment/uuid"/>
       <xs:field xpath="."/>
     </xs:key>    
-    <xs:key name="comment_short-name">
-      <xs:selector xpath="comment/short-name"/>
-      <xs:field xpath="."/>
-    </xs:key>    
-    <xs:keyref refer="comment_uuid" name="in-reply-to">
-      <xs:selector xpath="*/in-reply-to"/>
-      <xs:field xpath="."/>
-    </xs:keyref>
   </xs:element>
 
   <xs:element name="severity">

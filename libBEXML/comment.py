@@ -86,6 +86,11 @@ class Comment(PropertiedDictionary):
         return self.__parent
 
     @property
+    def parentParser(self):
+        """Returns the parser to which this comment belongs"""
+        return self.__parent.parentParser
+
+    @property
     def isLoaded(self):
         """True if comment has been loaded from backing store"""
         return self.__loaded

@@ -1,0 +1,136 @@
+Timer unit: 3.07049e-07 s
+
+File: .\libBEXML\propertieddictionary.py
+Function: __lookup at line 118
+Total time: 4.02178 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   118                                               @lineprofile
+   119                                               def __lookup(self, key, flatten=False):
+   120    560637      3060286      5.5     23.4          key=key.lower()
+   121    560637      3313784      5.9     25.3          has=dict.has_key(self, key)
+   122    560637      2336956      4.2     17.8          if has or not flatten:
+   123    381040      1562706      4.1     11.9              return dict.__getitem__(self, key) if has else None
+   124    179597      1120797      6.2      8.6          key=key.replace('_', '-')
+   125    179597      1004072      5.6      7.7          has=dict.has_key(self, key)
+   126    179597       699556      3.9      5.3          return dict.__getitem__(self, key) if has else None
+
+File: .\libBEXML\propertieddictionary.py
+Function: _load_mostly at line 189
+Total time: 7.10608 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   189                                               @lineprofile
+   190                                               def _load_mostly(self, *entries, **args):
+   191                                                   """Loads in a set of values from arguments or a dictionary, returning those not loaded"""
+   192     11274        74455      6.6      0.3          if len(entries)==0 and len(args)==0: return
+   193     22548       116460      5.2      0.5          for entry in entries:
+   194     11274        68069      6.0      0.3              assert isinstance(entry, dict)
+   195     11274       139585     12.4      0.6              args.update(entry)
+   196     11274        53876      4.8      0.2          ret={}
+   197    184940       844842      4.6      3.7          for key in args:
+   198    173667      1111091      6.4      4.8              mkey=key.replace('_', '-')
+   199    173667     10558485     60.8     45.6              p=self.__lookup(mkey)
+   200    173667       806121      4.6      3.5              if p is None:
+   201    122529       645297      5.3      2.8                  ret[key]=args[key]
+   202                                                       else:
+   203     51138      8679319    169.7     37.5                  p.value=p.coercer(args[key])
+   204     11273        45527      4.0      0.2          return ret
+
+File: .\libBEXML\xmlparserbase.py
+Function: load at line 131
+Total time: 8.19018 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   131                                               @lineprofile
+   132                                               def load(self, reload=False):
+   133                                                   """Loads in the issue from XML"""
+   134      5772        59879     10.4      0.2          if not reload and self.isLoaded:
+   135                                                       return
+   136      5772        29234      5.1      0.1          values={}
+   137     97586       651236      6.7      2.4          for valueelem in self.__element:
+   138     91814       590747      6.4      2.2              if valueelem.tag not in self.__dontprocess:
+   139     86042       476283      5.5      1.8                  if valueelem.tag not in self.__mapToBE :
+   140     51410       244336      4.8      0.9                      k=valueelem.tag
+   141     51410       263289      5.1      1.0                      v=valueelem.text
+   142                                                           else:
+   143     34632       201751      5.8      0.8                      m=self.__mapToBE[valueelem.tag]
+   144     34632       185899      5.4      0.7                      k=m[0]
+   145     34632      3858505    111.4     14.5                      v=m[1](valueelem)
+   146     86042       460389      5.4      1.7                  values[k]=v
+   147      5772     13999634   2425.4     52.5          notloaded=self._load_mostly(values)
+   148      5772      1884418    326.5      7.1          self.isLoaded=True
+   149      5772        36273      6.3      0.1          if len(notloaded)>0:
+   150                                                       #log.warn("The following values from issue "+str(self.uuid)+" were not recognised: "+repr(notloaded))
+   151      5772      1834438    317.8      6.9              self.extraFields=notloaded
+   152      5772      1830621    317.2      6.9          self.isDirty=False
+   153      5772        66886     11.6      0.3          if self.tracksStaleness:
+   154                                                       self.__elementhash=hash(self.__element)
+
+File: .\libBEXML\xmlparserbase.py
+Function: parseIssues at line 229
+Total time: 25.7029 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+   229                                               @lineprofile
+   230                                               def parseIssues(self, issuefilter=None):
+   231         1            6      6.0      0.0          if self.source is None:
+   232                                                       self.reload()
+   233         1            7      7.0      0.0          if len(self.bugs)==0:
+   234         1            8      8.0      0.0              tag='bug' if 'bug' not in self.__mapToBE else self.__mapToBE['bug']
+   235      5773      1199028    207.7      1.4              for _, bugelem in etree.iterparse(self.source, tag=tag, schema=self.xml_schema):
+   236      5773     51767300   8967.1     61.8                  issue=self._XMLIssue(bugelem)
+   237      5772     30682863   5315.8     36.7                  self.bugs[issue.uuid]=issue
+   238      5772        32244      5.6      0.0                  if issuefilter is None or issue._match(issuefilter):
+   239      5772        27885      4.8      0.0                      yield issue
+   240                                                   else:
+   241                                                       for issueuuid in self.bugs:
+   242                                                           issue=self.bugs[issueuuid]
+   243                                                           if issuefilter is None or issue._match(issuefilter):
+   244                                                               yield issue
+
+File: G:\BEurtle\BEXML\tests\LibTest.py
+Function: readRepo at line 38
+Total time: 25.833 s
+
+Line #      Hits         Time  Per Hit   % Time  Line Contents
+==============================================================
+    38                                           def readRepo(parser, forceLoad=False, printSummaries=False, filter=None):
+    39         1            9      9.0      0.0      issues=comments=0
+    40         1            6      6.0      0.0      issueparsetaken=0
+    41         1            6      6.0      0.0      issueloadtaken=0
+    42         1            5      5.0      0.0      commentparsetaken=0
+    43         1            5      5.0      0.0      commentloadtaken=0
+    44         1            8      8.0      0.0      start=time.time()
+    45      5773     84067816  14562.2     99.9      for issue in parser.parseIssues(issuefilter=filter):
+    46      5772        35750      6.2      0.0          issues+=1
+    47      5772        29335      5.1      0.0          if printSummaries: print(repr("  "+str(issue.uuid)+": "+issue.summary))
+    48                                               end=time.time()
+    49                                               issueparsetaken+=end-start-emptyloop
+    50                                               if forceLoad:
+    51                                                   start=time.time()
+    52                                                   for issue in parser.parseIssues(issuefilter=filter):
+    53                                                       issue.status
+    54                                                   end=time.time()
+    55                                                   issueloadtaken+=end-start-emptyloop
+    56                                               start=time.time()
+    57                                               for issue in parser.parseIssues(issuefilter=filter):
+    58                                                   for commentuuid in issue.comments:
+    59                                                       comments+=1
+    60                                               end=time.time()
+    61                                               commentparsetaken+=end-start-emptyloop
+    62                                               if forceLoad:
+    63                                                   start=time.time()
+    64                                                   for issue in parser.parseIssues(issuefilter=filter):
+    65                                                      for commentuuid in issue.comments:
+    66                                                           issue.comments[commentuuid].alt_id
+    67                                                   end=time.time()
+    68                                                   commentloadtaken+=end-start-emptyloop
+    69                                               return namedtuple('ReadRepoTimings', ['issues', 'comments', 'issueparse', 'issueload', 'commentparse', 'commentload'])(issues=issues, comments=comments, issueparse=issueparsetaken, issueload=issueloadtaken, commentparse=commentparsetaken, commentload=commentloadtaken)
+
+
+

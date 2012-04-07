@@ -5,6 +5,7 @@
 from ..xmlparserbase import XMLComment, XMLIssue, XMLParser
 
 import os, logging
+from copy import copy, deepcopy
 
 log=logging.getLogger(__name__)
 
@@ -21,6 +22,10 @@ class BEXMLIssue(XMLIssue):
 
     def __init__(self, bugelem):
         XMLIssue.__init__(self, bugelem, mapToBE={'created':('time', lambda xmlelem:xmlelem.text), 'extra-string':('extra-strings', lambda xmlelem:xmlelem.text)}, dontprocess=set(['comment']))
+
+    @XMLIssue.element.setter
+    def element(self, value):
+        XMLIssue.element.fset(self, value)
         for valueelem in self.element.findall("comment"):
             if valueelem.tag=="comment":
                 self.addComment(BEXMLComment(self, valueelem))
@@ -34,10 +39,13 @@ class BEXMLParser(XMLParser):
         return os.path.join(os.path.dirname(__file__), "bexml.xsd")
 
     def _XMLIssue(self, bugelem, **pars):
-        return BEXMLIssue(bugelem, **pars)
+        ret=copy(self.BEXMLIssue)
+        ret.element=bugelem
+        return ret
 
     def __init__(self, uri, encoding="utf-8"):
         XMLParser.__init__(self, uri, encoding)
+        self.BEXMLIssue=BEXMLIssue(None)
 
     def try_location(self, mimetype=None, first256bytes=None):
         score, errmsg=XMLParser.try_location(self, mimetype, first256bytes)

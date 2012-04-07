@@ -19,6 +19,10 @@ class TestParseBErepoWithLib(TestParseWithLib, unittest.TestCase):
     def profile(self):
         return False
 
+    @property
+    def filter(self):
+        return "Trevor"
+
 if __name__=="__main__":
     unittest.main()
             

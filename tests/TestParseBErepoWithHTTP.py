@@ -10,7 +10,7 @@ if sys.path[0]!='.': sys.path.insert(0, '.')
 from bexmlsrv import app
 import logging, time, unittest, omnijson as json, urllib
 
-class TestParseBErepoWithLib(unittest.TestCase):
+class TestParseBErepoWithHTTP(unittest.TestCase):
     def setUp(self):
         logging.basicConfig(level=logging.WARN)
         start=time.time()

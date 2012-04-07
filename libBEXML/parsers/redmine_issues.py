@@ -83,8 +83,6 @@ class RedmineXMLParser(XMLParser):
     def _XMLIssue(self, bugelem, **pars):
         ret=copy(self.RedmineXMLIssue)
         ret.element=bugelem
-        #assert self.RedmineXMLIssueHash==hash(self.RedmineXMLIssue)
-        #ret=RedmineXMLIssue(self, bugelem, **pars)
         return ret
 
     def __init__(self, uri, encoding="utf-8"):
@@ -94,7 +92,6 @@ class RedmineXMLParser(XMLParser):
         self.issuepriorityids={} # Ditto
         self.issueauthorids={} # Ditto
         self.RedmineXMLIssue=RedmineXMLIssue(self, None)
-        #self.RedmineXMLIssueHash=hash(self.RedmineXMLIssue)
 
     def try_location(self, mimetype=None, first256bytes=None):
         score, errmsg=XMLParser.try_location(self, mimetype, first256bytes)

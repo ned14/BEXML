@@ -7,6 +7,8 @@ import logging, time, unittest, cProfile, pstats
 from collections import namedtuple
 from abc import ABCMeta, abstractmethod, abstractproperty
 
+log=logging.getLogger(__name__)
+
 # Figure out how long an empty loop takes
 start=time.time()
 while time.time()-start<2: pass # Prime SpeedStep
@@ -17,6 +19,7 @@ end=time.time()
 emptyloop=end-start
 del start, end, n
 emptyloop/=100
+log.info("Timing overhead is %f secs" % emptyloop)
 
 
 def readRepo(parser, forceLoad=True, printSummaries=False, filter=None):
@@ -61,6 +64,11 @@ class TestParseWithLib():
     @abstractproperty
     def profile(self):
         """True if we should profile the test"""
+        pass
+
+    @abstractproperty
+    def filter(self):
+        """Returns the name to search for"""
         pass
 
     def setUp(self):
@@ -110,7 +118,7 @@ class TestParseWithLib():
         else: commentssec=0
         print("That's %f issues/sec and %f comments/sec" % (issuessec, commentssec))
 
-        print("\nIssues reported by anyone called John:")
-        timings=readRepo(parser, filter="{{reporter}}:{{John}}")
+        print("\nIssues reported by anyone called %s:" % self.filter)
+        timings=readRepo(parser, filter="{{reporter}}:{{%s}}" % self.filter)
         print("Reading %d issues from the repository took %f secs to parse and %f secs to load" % (timings.issues, timings.issueparse, timings.issueload))
 

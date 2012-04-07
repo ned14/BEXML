@@ -17,6 +17,10 @@ class TestParseRedmineXMLWithLib(TestParseWithLib, unittest.TestCase):
     def profile(self):
         return False
 
+    @property
+    def filter(self):
+        return "John"
+
 if __name__=="__main__":
     unittest.main()
     

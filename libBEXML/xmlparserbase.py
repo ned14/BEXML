@@ -5,8 +5,9 @@
 from parserbase import ParserBase
 from issue import Issue as IssueBase
 from comment import Comment as CommentBase
+from PaginatedDataSource import PaginatedDataSource
 
-import os, logging, urlparse, urllib2
+import os, logging
 from abc import ABCMeta, abstractmethod, abstractproperty
 try:
     from abc import abstractclassmethod
@@ -223,7 +224,7 @@ class XMLParser(ParserBase):
         if self.uri.scheme=="file":
             self.source=open(self.uri.pathname, 'r')
         else:
-            self.source=urllib2.urlopen(str(self.uri))
+            self.source=PaginatedDataSource(self.uri)
 
     #@lineprofile
     def parseIssues(self, issuefilter=None):

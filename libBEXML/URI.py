@@ -68,7 +68,7 @@ class URI(object):
         if isinstance(uri, str):
             up=urlparse.urlparse(uri)
             assert up.scheme is not ""
-            if up.scheme.lower()=="file":
+            if up.scheme.lower()=="file" and up.netloc[0]!='/' and up.netloc[1]!=':':
                 up=(up.scheme.lower(), os.path.abspath(up.netloc).replace(os.sep, '/'), up.path, up.params, up.query, up.fragment)
                 uri2=urlparse.urlunparse(up)
                 if uri!=uri2:

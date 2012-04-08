@@ -38,7 +38,7 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 from uuid import UUID
 from datetime import datetime
 
-from propertieddictionary import PropertiedDictionary
+from PropertiedDictionary import PropertiedDictionary
 from comment import Comment
 from coerce_datetime import coerce_datetime
 

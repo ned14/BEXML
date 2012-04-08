@@ -63,7 +63,7 @@ class URI(object):
 
     def __init__(self, *pars, **kpars):
         uri=pars[0] if len(pars)>0 else None
-        if isinstance(uri, URI):
+        if uri is not None and not isinstance(uri, str):
             uri=str(uri)
         if isinstance(uri, str):
             up=urlparse.urlparse(uri)

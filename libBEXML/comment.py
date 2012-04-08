@@ -34,7 +34,7 @@
 </bug>
 """
 
-from propertieddictionary import PropertiedDictionary
+from PropertiedDictionary import PropertiedDictionary
 from coerce_datetime import coerce_datetime
 
 from abc import ABCMeta, abstractmethod, abstractproperty

@@ -111,10 +111,25 @@ class RedmineXMLIssue(XMLIssue):
         descriptionelem=self.element.find("description")
         if descriptionelem is not None and descriptionelem.text is not None:
             self.addComment(RedmineXMLComment(self, self.element))
+        # Redmine currently doesn't supply the journals element in /issues.xml, but it might in the future
+        journalselem=self.element.find("journals")
+        if journalselem is not None:
+            for valueelem in journalselem.findall("journal"):
+                if valueelem.find("notes").text is not None:
+                    self.addComment(RedmineXMLComment(self, valueelem))
 
 
 class RedmineXMLParser(XMLParser):
-    """Parses an XML based Redmine repo"""
+    """Parses an XML based Redmine repo
+
+    Note that many Redmine installations limit their results rather than provide a demand-driven
+    XML stream. If a limit attribute is returned, the results are assumed to be paginated and
+    further pages are automatically fetched as needed.
+
+    You can optimise how much data is fetched by prespecifying an offset parameter to start
+    later. This lets you fetch all new issues by starting from the offset where the last time
+    you fetched a new issue.
+    """
 
     @classmethod
     def _schemapath(cls):

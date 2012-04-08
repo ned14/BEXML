@@ -198,11 +198,10 @@ class XMLParser(ParserBase):
 
     @abstractmethod
     def try_location(self, mimetype=None, first256bytes=None):
-        up=urlparse.urlparse(self.uri)
         data=None
         score=0
-        if up.scheme=="file":
-            path=self._pathFromURI()
+        if self.uri.scheme=="file":
+            path=self.uri.pathname
             if path[-4:]!='.xml':
                 return (-999, "'"+path+"' is not an XML file")
             if not os.path.isfile(path):
@@ -221,10 +220,10 @@ class XMLParser(ParserBase):
             self.source.close()
             self.source=None
         self.bugs={}
-        if self.uri[:4]=="file":
-            self.source=open(self._pathFromURI(), 'r')
+        if self.uri.scheme=="file":
+            self.source=open(self.uri.pathname, 'r')
         else:
-            self.source=urllib2.urlopen(self.uri)
+            self.source=urllib2.urlopen(str(self.uri))
 
     #@lineprofile
     def parseIssues(self, issuefilter=None):

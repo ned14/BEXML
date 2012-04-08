@@ -138,7 +138,7 @@ class BEDirParser(ParserBase):
         self.__bedir={}         # Dictionary of bug directories in repo
 
     def try_location(self, mimetype=None, first256bytes=None):
-        path=self._pathFromURI()
+        path=self.uri.pathname
         if path is None or not os.path.exists(path) or not os.path.exists(os.path.join(path, ".be")):
             return (-999, "'"+path+"' is not a BE directory")
         path=os.path.join(path, ".be")
@@ -169,7 +169,7 @@ class BEDirParser(ParserBase):
         """Loads a BE directory structure into memory"""
         if self.version=="":
             assert self.try_location()[0]>0
-        path=os.path.join(self._pathFromURI(), ".be")
+        path=os.path.join(self.uri.pathname, ".be")
         items=filter(self.uuid_match.match, os.listdir(path))
         self.__bedir={}
         for item in items:

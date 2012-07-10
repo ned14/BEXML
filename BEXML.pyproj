@@ -5,12 +5,13 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{acaefc7d-2e27-4e17-8184-89468d9edfb1}</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>tests\TestParseBErepoWithHTTP.py</StartupFile>
+    <StartupFile>tests\TestParseRedmineWithLib.py</StartupFile>
     <SearchPath>
     </SearchPath>
-    <WorkingDirectory>.</WorkingDirectory>
-    <InterpreterId>fcc291aa-427c-498c-a4d7-4502d6449b8c</InterpreterId>
-    <LaunchProvider>IronPython (.NET) launcher</LaunchProvider>
+    <WorkingDirectory>
+    </WorkingDirectory>
+    <InterpreterId>2af0f10d-7135-4994-9156-5d01c9c11b7e</InterpreterId>
+    <LaunchProvider>Standard Python launcher</LaunchProvider>
     <InterpreterVersion>2.7</InterpreterVersion>
     <OutputPath>.</OutputPath>
     <Name>BEXML</Name>
@@ -57,6 +58,7 @@
     <Compile Include="tests\TestParseBErepoWithHTTP.py" />
     <Compile Include="tests\TestParseBErepoWithLib.py" />
     <Compile Include="tests\TestParseBEXMLWithLib.py" />
+    <Compile Include="tests\TestParseRedmineWithLib.py" />
     <Compile Include="tests\TestParseRedmineXMLWithLib.py" />
   </ItemGroup>
   <ItemGroup>

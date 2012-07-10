@@ -38,9 +38,13 @@ def BEXML(uri, storageparser=None, **args):
 
         parser_instances=[parsers.__dict__[parser_module].instantiate(uri, **args) for parser_module in parsers.__all__]
         parser_scores=[(instance.try_location(mimetype, first256bytes), instance) for instance in parser_instances]
-        parser_scores.sort()
-        score=parser_scores[len(parser_scores)-1][0]
-        storageparser=parser_scores[len(parser_scores)-1][1]
+        parser_scores.sort(reverse=True)
+        if log.isEnabledFor(logging.INFO):
+            log.info("Parser scoring of input returned:")
+            for score in parser_scores:
+                log.info("   %s" % repr(score))
+        score=parser_scores[0][0]
+        storageparser=parser_scores[0][1]
     else:
         storageparser=storageparser(uri, **args)
         score=storageparser.try_location()

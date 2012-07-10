@@ -140,7 +140,7 @@ class BEDirParser(ParserBase):
     def try_location(self, mimetype=None, first256bytes=None):
         path=self.uri.pathname
         if path is None or not os.path.exists(path) or not os.path.exists(os.path.join(path, ".be")):
-            return (-999, "'"+path+"' is not a BE directory")
+            return (-999, "'"+str(path)+"' is not a BE directory")
         path=os.path.join(path, ".be")
         if not os.path.exists(os.path.join(path, "version")):
             return (-998, "Missing version file")

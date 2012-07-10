@@ -18,7 +18,7 @@ if line_profiler is None:
     __builtin__.__dict__['lineprofile']=lambda x:x
 
 from libBEXML import BEXML
-import logging, time, unittest, cProfile, pstats, os
+import logging, time, unittest, cProfile, pstats, os, sys
 from collections import namedtuple
 from abc import ABCMeta, abstractmethod, abstractproperty
 
@@ -96,15 +96,18 @@ class TestParseWithLib():
 
     def tearDown(self):
         if self.profile:
-            if line_profiler is not None:
-                with open("lineProfile.txt", "a") as oh:
-                    line_profiler.print_stats(oh)
-                    oh.write("\n\n")
-            else:
-                with open("cProfile.txt", "a") as oh:
-                    p=pstats.Stats('cProfile', stream=oh)
-                    p.sort_stats('cumulative').print_stats(30)
-                    oh.write("\n\n")
+            try:
+                if line_profiler is not None:
+                    with open("lineProfile.txt", "a") as oh:
+                        line_profiler.print_stats(oh)
+                        oh.write("\n\n")
+                else:
+                    with open("cProfile.txt", "a") as oh:
+                        p=pstats.Stats('cProfile', stream=oh)
+                        p.sort_stats('cumulative').print_stats(30)
+                        oh.write("\n\n")
+            except:
+                sys.stderr.write("Exception writing profiling stats: %s\n" % sys.exc_info()[1])
 
     def test(self):
         start=time.time()

@@ -45,7 +45,7 @@ class DictViewOfList(MutableMapping):
         return False
 
     def __iter__(self):
-        return DictViewOfListIter(self.__list)
+        return self.DictViewOfListIter(self.__list)
 
     def __getitem__(self, k):
         for _k, _v in self.__list:

@@ -3,6 +3,7 @@
 # Created: March 2012
 
 from ..xmlparserbase import XMLComment, XMLIssue, XMLParser
+from .. import PaginatedDataSource
 
 import os, logging, uuid
 from copy import copy, deepcopy
@@ -134,6 +135,30 @@ class RedmineXMLParser(XMLParser):
     @classmethod
     def _schemapath(cls):
         return os.path.join(os.path.dirname(__file__), "redmine_issues.xsd")
+
+    @classmethod
+    def _sourceopen(cls, uri):
+        def redminepager(response):
+            if response is None: return {'offset':0}
+            # Format is <issues type="array" total_count="2595" limit="25" offset="0">
+            def getval(s, idx, item):
+                i=s.find(item, idx)
+                if -1==i: return None
+                i+=len(item)+2
+                q=s.find('"', i)
+                if -1==q: return None
+                return int(s[i:q])
+            data=response.data[:256]
+            issuesidx=data.find('<issues type="array"')
+            total_count=getval(data, issuesidx, "total_count")
+            limit=getval(data, issuesidx, "limit")
+            offset=getval(data, issuesidx, "offset")
+            if total_count is None or limit is None or offset is None: raise Exception("Malformed input: %s" % data)
+            if offset+limit>=total_count:
+                return None
+            else:
+                return {'offset':offset+limit}
+        return open(uri.pathname, 'r') if uri.scheme=="file" else PaginatedDataSource.urlopen(uri, redminepager)
 
     def _XMLIssue(self, bugelem, **pars):
         ret=copy(self.RedmineXMLIssue)

@@ -5,7 +5,6 @@
 from parserbase import ParserBase
 from issue import Issue as IssueBase
 from comment import Comment as CommentBase
-from PaginatedDataSource import PaginatedDataSource
 
 import os, logging
 from abc import ABCMeta, abstractmethod, abstractproperty
@@ -167,6 +166,14 @@ class XMLParser(ParserBase):
         """
         pass
 
+    @abstractclassmethod
+    def _sourceopen(cls, uri):
+        """Return a file like object reading the source uri. Return something like:
+
+        return open(uri.pathname, 'r') if uri.scheme=="file" else urllib2.urlopen(str(self.uri))
+        """
+        pass
+
     @abstractmethod
     def _XMLIssue(self, bugelem, **pars):
         """Returns the XML issue implementation used by this implementation. Note that constructing
@@ -216,15 +223,12 @@ class XMLParser(ParserBase):
     def reload(self):
         """Start parsing a XML source"""
         if self.source is None:
-            assert self.try_location()[0]>0
+            assert self.try_location()[0]>=0
         if self.source is not None:
             self.source.close()
             self.source=None
         self.bugs={}
-        if self.uri.scheme=="file":
-            self.source=open(self.uri.pathname, 'r')
-        else:
-            self.source=PaginatedDataSource(self.uri)
+        self.source=self._sourceopen(self.uri)
 
     #@lineprofile
     def parseIssues(self, issuefilter=None):

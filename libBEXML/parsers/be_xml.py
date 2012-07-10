@@ -38,6 +38,10 @@ class BEXMLParser(XMLParser):
     def _schemapath(cls):
         return os.path.join(os.path.dirname(__file__), "bexml.xsd")
 
+    @classmethod
+    def _sourceopen(cls, uri):
+        return open(uri.pathname, 'r') if uri.scheme=="file" else urllib2.urlopen(str(self.uri))
+
     def _XMLIssue(self, bugelem, **pars):
         ret=copy(self.BEXMLIssue)
         ret.element=bugelem

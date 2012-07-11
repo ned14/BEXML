@@ -92,6 +92,8 @@ class PaginatedDataSource(Iterator):
     def close(*args):
         # lxml seems to call us as close(self, ...) rather than self.close(...)
         args[0].__page=-1
+        args[0].__data=[]
+        args[0].__threadpool=None
 
     def read(*args):
         # lxml seems to call us as read(self, ...) rather than self.read(...)
@@ -101,13 +103,13 @@ class PaginatedDataSource(Iterator):
             return ""
 
     def readline(size=None):
-        pass
+        raise NotImplementedError()
 
     def readlines(sizehint=None):
-        pass
+        raise NotImplementedError()
 
     def tell():
-        pass
+        raise NotImplementedError()
 
     @property
     def closed(self):

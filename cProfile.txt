@@ -1,27 +1,27 @@
-Tue Jul 10 20:15:41 2012    cProfile
+Wed Jul 11 12:39:26 2012    cProfile
 
-         153745 function calls (146561 primitive calls) in 0.271 seconds
+         153745 function calls (146561 primitive calls) in 0.267 seconds
 
    Ordered by: cumulative time
    List reduced from 74 to 30 due to restriction <30>
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1    0.000    0.000    0.271    0.271 <string>:1(<module>)
-        1    0.000    0.000    0.271    0.271 g:\beurtle\bexml\tests\LibTest.py:38(readRepo)
-      310    0.001    0.000    0.270    0.001 g:\beurtle\bexml\libBEXML\parsers\be_dir.py:187(parseIssues)
-      308    0.003    0.000    0.265    0.001 g:\beurtle\bexml\libBEXML\parsers\be_dir.py:158(__loadIssueAndComments)
-      496    0.004    0.000    0.165    0.000 g:\beurtle\bexml\libBEXML\parsers\be_dir.py:91(addComment)
-      496    0.004    0.000    0.122    0.000 g:\beurtle\bexml\libBEXML\parsers\be_dir.py:22(__init__)
-14728/11136    0.053    0.000    0.104    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:222(__setattr__)
-8432/6448    0.015    0.000    0.091    0.000 g:\beurtle\bexml\libBEXML\comment.py:148(__setattr__)
-      308    0.003    0.000    0.070    0.000 g:\beurtle\bexml\libBEXML\parsers\be_dir.py:68(__init__)
-6296/4688    0.012    0.000    0.050    0.000 g:\beurtle\bexml\libBEXML\issue.py:178(__setattr__)
-      496    0.007    0.000    0.049    0.000 g:\beurtle\bexml\libBEXML\comment.py:60(__init__)
-     7048    0.025    0.000    0.045    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:151(_addProperty)
-      308    0.005    0.000    0.041    0.000 g:\beurtle\bexml\libBEXML\issue.py:66(__init__)
+        1    0.000    0.000    0.267    0.267 <string>:1(<module>)
+        1    0.000    0.000    0.267    0.267 g:\beurtle\bexml\tests\LibTest.py:38(readRepo)
+      310    0.001    0.000    0.266    0.001 g:\beurtle\bexml\libBEXML\parsers\be_dir.py:187(parseIssues)
+      308    0.003    0.000    0.260    0.001 g:\beurtle\bexml\libBEXML\parsers\be_dir.py:158(__loadIssueAndComments)
+      496    0.004    0.000    0.162    0.000 g:\beurtle\bexml\libBEXML\parsers\be_dir.py:91(addComment)
+      496    0.004    0.000    0.120    0.000 g:\beurtle\bexml\libBEXML\parsers\be_dir.py:22(__init__)
+14728/11136    0.052    0.000    0.102    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:222(__setattr__)
+8432/6448    0.015    0.000    0.090    0.000 g:\beurtle\bexml\libBEXML\comment.py:148(__setattr__)
+      308    0.003    0.000    0.069    0.000 g:\beurtle\bexml\libBEXML\parsers\be_dir.py:68(__init__)
+6296/4688    0.011    0.000    0.050    0.000 g:\beurtle\bexml\libBEXML\issue.py:178(__setattr__)
+      496    0.007    0.000    0.048    0.000 g:\beurtle\bexml\libBEXML\comment.py:60(__init__)
+     7048    0.024    0.000    0.044    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:151(_addProperty)
+      308    0.005    0.000    0.040    0.000 g:\beurtle\bexml\libBEXML\issue.py:66(__init__)
     30448    0.032    0.000    0.039    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:119(__lookup)
     15224    0.012    0.000    0.023    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:163(_isProperty)
-     7048    0.009    0.000    0.020    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:12(__init__)
+     7048    0.008    0.000    0.020    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:12(__init__)
      1984    0.002    0.000    0.015    0.000 g:\beurtle\bexml\libBEXML\comment.py:97(isLoaded)
      1112    0.011    0.000    0.013    0.000 f:\python27\lib\ntpath.py:164(split)
      1608    0.002    0.000    0.013    0.000 g:\beurtle\bexml\libBEXML\issue.py:110(isLoaded)
@@ -40,64 +40,64 @@ Tue Jul 10 20:15:41 2012    cProfile
 
 
 
-Tue Jul 10 20:15:43 2012    cProfile
+Wed Jul 11 12:39:27 2012    cProfile
 
-         85657 function calls (78367 primitive calls) in 0.159 seconds
+         85657 function calls (78367 primitive calls) in 0.151 seconds
 
    Ordered by: cumulative time
    List reduced from 120 to 30 due to restriction <30>
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1    0.000    0.000    0.159    0.159 g:\beurtle\bexml\tests\LibTest.py:38(readRepo)
-      310    0.021    0.000    0.158    0.001 g:\beurtle\bexml\libBEXML\xmlparserbase.py:234(parseIssues)
-      154    0.000    0.000    0.106    0.001 g:\beurtle\bexml\libBEXML\parsers\be_xml.py:45(_XMLIssue)
- 1078/616    0.002    0.000    0.088    0.000 g:\beurtle\bexml\libBEXML\issue.py:178(__setattr__)
- 5296/770    0.010    0.000    0.087    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:222(__setattr__)
-      154    0.001    0.000    0.081    0.001 g:\beurtle\bexml\libBEXML\parsers\be_xml.py:26(element)
-      254    0.001    0.000    0.042    0.000 g:\beurtle\bexml\libBEXML\parsers\be_xml.py:16(__init__)
-      254    0.002    0.000    0.040    0.000 g:\beurtle\bexml\libBEXML\xmlparserbase.py:26(__init__)
-      254    0.001    0.000    0.034    0.000 g:\beurtle\bexml\libBEXML\issue.py:143(addComment)
-      462    0.001    0.000    0.033    0.000 g:\beurtle\bexml\libBEXML\issue.py:169(__getattr__)
-      254    0.001    0.000    0.031    0.000 g:\beurtle\bexml\libBEXML\comment.py:139(__getattr__)
-4064/3302    0.007    0.000    0.029    0.000 g:\beurtle\bexml\libBEXML\comment.py:148(__setattr__)
-      408    0.008    0.000    0.029    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:187(_load_mostly)
-      254    0.006    0.000    0.029    0.000 g:\beurtle\bexml\libBEXML\xmlparserbase.py:64(load)
-      254    0.004    0.000    0.028    0.000 g:\beurtle\bexml\libBEXML\comment.py:60(__init__)
-      154    0.004    0.000    0.028    0.000 g:\beurtle\bexml\libBEXML\xmlparserbase.py:132(load)
- 1694/154    0.002    0.000    0.024    0.000 f:\python27\lib\copy.py:66(copy)
+        1    0.000    0.000    0.151    0.151 g:\beurtle\bexml\tests\LibTest.py:38(readRepo)
+      310    0.020    0.000    0.150    0.000 g:\beurtle\bexml\libBEXML\xmlparserbase.py:234(parseIssues)
+      154    0.000    0.000    0.101    0.001 g:\beurtle\bexml\libBEXML\parsers\be_xml.py:45(_XMLIssue)
+ 1078/616    0.002    0.000    0.084    0.000 g:\beurtle\bexml\libBEXML\issue.py:178(__setattr__)
+ 5296/770    0.010    0.000    0.083    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:222(__setattr__)
+      154    0.001    0.000    0.077    0.000 g:\beurtle\bexml\libBEXML\parsers\be_xml.py:26(element)
+      254    0.001    0.000    0.039    0.000 g:\beurtle\bexml\libBEXML\parsers\be_xml.py:16(__init__)
+      254    0.002    0.000    0.038    0.000 g:\beurtle\bexml\libBEXML\xmlparserbase.py:26(__init__)
+      254    0.001    0.000    0.032    0.000 g:\beurtle\bexml\libBEXML\issue.py:143(addComment)
+      462    0.001    0.000    0.030    0.000 g:\beurtle\bexml\libBEXML\issue.py:169(__getattr__)
+      254    0.001    0.000    0.030    0.000 g:\beurtle\bexml\libBEXML\comment.py:139(__getattr__)
+4064/3302    0.007    0.000    0.028    0.000 g:\beurtle\bexml\libBEXML\comment.py:148(__setattr__)
+      254    0.006    0.000    0.027    0.000 g:\beurtle\bexml\libBEXML\xmlparserbase.py:64(load)
+      408    0.007    0.000    0.027    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:187(_load_mostly)
+      254    0.004    0.000    0.027    0.000 g:\beurtle\bexml\libBEXML\comment.py:60(__init__)
+      154    0.004    0.000    0.026    0.000 g:\beurtle\bexml\libBEXML\xmlparserbase.py:132(load)
+ 1694/154    0.002    0.000    0.023    0.000 f:\python27\lib\copy.py:66(copy)
       154    0.000    0.000    0.023    0.000 g:\beurtle\bexml\libBEXML\issue.py:86(__copy__)
-      154    0.003    0.000    0.022    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:127(__copy__)
+      154    0.003    0.000    0.021    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:127(__copy__)
     14800    0.016    0.000    0.019    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:119(__lookup)
-     2032    0.009    0.000    0.015    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:151(_addProperty)
+     2032    0.008    0.000    0.014    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:151(_addProperty)
      1540    0.004    0.000    0.011    0.000 f:\python27\lib\copy.py:123(_copy_inst)
-      408    0.002    0.000    0.011    0.000 g:\beurtle\bexml\libBEXML\coerce_datetime.py:8(coerce_datetime)
-     6468    0.007    0.000    0.010    0.000 {hasattr}
-     5858    0.004    0.000    0.009    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:163(_isProperty)
-      131    0.001    0.000    0.007    0.000 {built-in method strptime}
+      408    0.002    0.000    0.010    0.000 g:\beurtle\bexml\libBEXML\coerce_datetime.py:8(coerce_datetime)
+     6468    0.007    0.000    0.009    0.000 {hasattr}
+     5858    0.004    0.000    0.008    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:163(_isProperty)
+      131    0.001    0.000    0.006    0.000 {built-in method strptime}
      2032    0.003    0.000    0.006    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:12(__init__)
       131    0.003    0.000    0.006    0.000 f:\python27\lib\_strptime.py:295(_strptime)
     10022    0.005    0.000    0.005    0.000 {method 'replace' of 'str' objects}
-     2032    0.003    0.000    0.004    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:22(reset)
+      408    0.002    0.000    0.004    0.000 f:\python27\lib\uuid.py:101(__init__)
 
 
 
 
-Tue Jul 10 20:15:43 2012    cProfile
+Wed Jul 11 12:39:36 2012    cProfile
 
-         3505 function calls (3343 primitive calls) in 0.119 seconds
+         3557 function calls (3395 primitive calls) in 0.770 seconds
 
    Ordered by: cumulative time
    List reduced from 218 to 30 due to restriction <30>
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1    0.000    0.000    0.119    0.119 g:\beurtle\bexml\tests\LibTest.py:38(readRepo)
-        6    0.000    0.000    0.118    0.020 g:\beurtle\bexml\libBEXML\xmlparserbase.py:234(parseIssues)
-        3    0.000    0.000    0.113    0.038 g:\beurtle\bexml\libBEXML\PaginatedDataSource.py:96(read)
-        3    0.000    0.000    0.113    0.038 g:\beurtle\bexml\libBEXML\PaginatedDataSource.py:123(next)
-        3    0.000    0.000    0.112    0.037 g:\beurtle\bexml\libBEXML\PaginatedDataSource.py:81(__getData)
-        1    0.000    0.000    0.112    0.112 f:\python27\lib\multiprocessing\pool.py:507(wait)
-        1    0.000    0.000    0.112    0.112 f:\python27\lib\threading.py:235(wait)
-        7    0.112    0.016    0.112    0.016 {time.sleep}
+        1    0.000    0.000    0.770    0.770 g:\beurtle\bexml\tests\LibTest.py:38(readRepo)
+        6    0.000    0.000    0.769    0.128 g:\beurtle\bexml\libBEXML\xmlparserbase.py:234(parseIssues)
+        3    0.000    0.000    0.764    0.255 g:\beurtle\bexml\libBEXML\PaginatedDataSource.py:98(read)
+        3    0.000    0.000    0.764    0.255 g:\beurtle\bexml\libBEXML\PaginatedDataSource.py:125(next)
+        3    0.000    0.000    0.763    0.254 g:\beurtle\bexml\libBEXML\PaginatedDataSource.py:81(__getData)
+        1    0.000    0.000    0.763    0.763 f:\python27\lib\multiprocessing\pool.py:507(wait)
+        1    0.000    0.000    0.763    0.763 f:\python27\lib\threading.py:235(wait)
+       20    0.763    0.038    0.763    0.038 {time.sleep}
         2    0.000    0.000    0.004    0.002 g:\beurtle\bexml\libBEXML\parsers\redmine_issues.py:163(_XMLIssue)
     20/12    0.000    0.000    0.004    0.000 g:\beurtle\bexml\libBEXML\issue.py:178(__setattr__)
     62/14    0.000    0.000    0.004    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:222(__setattr__)
@@ -116,52 +116,52 @@ Tue Jul 10 20:15:43 2012    cProfile
         1    0.000    0.000    0.001    0.001 f:\python27\lib\sre_compile.py:480(_code)
      23/1    0.000    0.000    0.001    0.001 f:\python27\lib\sre_compile.py:32(_compile)
         1    0.000    0.000    0.001    0.001 f:\python27\lib\sre_parse.py:663(parse)
-        1    0.001    0.001    0.001    0.001 f:\python27\lib\collections.py:237(namedtuple)
       7/1    0.000    0.000    0.001    0.001 f:\python27\lib\sre_parse.py:301(_parse_sub)
      18/1    0.000    0.000    0.001    0.001 f:\python27\lib\sre_parse.py:379(_parse)
+        1    0.001    0.001    0.001    0.001 f:\python27\lib\collections.py:237(namedtuple)
         6    0.000    0.000    0.001    0.000 g:\beurtle\bexml\libBEXML\issue.py:169(__getattr__)
 
 
 
 
-Tue Jul 10 20:15:55 2012    cProfile
+Wed Jul 11 12:39:48 2012    cProfile
 
-         5806296 function calls (5379993 primitive calls) in 11.255 seconds
+         5806296 function calls (5379993 primitive calls) in 11.162 seconds
 
    Ordered by: cumulative time
    List reduced from 129 to 30 due to restriction <30>
 
    ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-        1    0.015    0.015   11.255   11.255 g:\beurtle\bexml\tests\LibTest.py:38(readRepo)
-    19316    0.645    0.000   11.238    0.001 g:\beurtle\bexml\libBEXML\xmlparserbase.py:234(parseIssues)
-     9657    0.020    0.000    7.594    0.001 g:\beurtle\bexml\libBEXML\parsers\redmine_issues.py:163(_XMLIssue)
-96570/57942    0.177    0.000    6.659    0.000 g:\beurtle\bexml\libBEXML\issue.py:178(__setattr__)
-293247/67599    0.743    0.000    6.503    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:222(__setattr__)
-     9657    0.095    0.000    5.858    0.001 g:\beurtle\bexml\libBEXML\parsers\redmine_issues.py:108(element)
-     9351    0.149    0.000    5.030    0.001 g:\beurtle\bexml\libBEXML\parsers\redmine_issues.py:34(__init__)
-    28971    0.083    0.000    3.141    0.000 g:\beurtle\bexml\libBEXML\issue.py:169(__getattr__)
-187020/121563    0.371    0.000    3.104    0.000 g:\beurtle\bexml\libBEXML\comment.py:148(__setattr__)
-     9657    0.401    0.000    2.895    0.000 g:\beurtle\bexml\libBEXML\xmlparserbase.py:132(load)
-    19008    0.556    0.000    2.293    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:187(_load_mostly)
-     9351    0.365    0.000    2.158    0.000 g:\beurtle\bexml\libBEXML\xmlparserbase.py:64(load)
-     9351    0.089    0.000    1.771    0.000 g:\beurtle\bexml\libBEXML\xmlparserbase.py:26(__init__)
-106227/9657    0.144    0.000    1.639    0.000 f:\python27\lib\copy.py:66(copy)
-     9657    0.026    0.000    1.608    0.000 g:\beurtle\bexml\libBEXML\issue.py:86(__copy__)
-     9657    0.208    0.000    1.373    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:127(__copy__)
-    28359    0.234    0.000    1.305    0.000 g:\beurtle\bexml\libBEXML\coerce_datetime.py:8(coerce_datetime)
-     9351    0.260    0.000    1.227    0.000 g:\beurtle\bexml\libBEXML\comment.py:60(__init__)
-   946366    0.975    0.000    1.135    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:119(__lookup)
-    19008    0.167    0.000    1.103    0.000 f:\python27\lib\uuid.py:549(uuid5)
-    19008    0.094    0.000    0.864    0.000 {built-in method strptime}
-    19008    0.422    0.000    0.770    0.000 f:\python27\lib\_strptime.py:295(_strptime)
-    96570    0.298    0.000    0.751    0.000 f:\python27\lib\copy.py:123(_copy_inst)
-     9657    0.076    0.000    0.705    0.000 g:\beurtle\bexml\libBEXML\parsers\redmine_issues.py:61(__mapIDToBE)
-   405594    0.436    0.000    0.595    0.000 {hasattr}
-    28665    0.071    0.000    0.592    0.000 {method 'find' of 'lxml.etree._Element' objects}
-    74808    0.331    0.000    0.561    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:151(_addProperty)
-    28665    0.074    0.000    0.510    0.000 f:\python27\lib\site-packages\lxml-2.3-py2.7-win32.egg\lxml\_elementpath.py:270(find)
-   321912    0.249    0.000    0.497    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:163(_isProperty)
-    19008    0.401    0.000    0.493    0.000 f:\python27\lib\uuid.py:101(__init__)
+        1    0.015    0.015   11.162   11.162 g:\beurtle\bexml\tests\LibTest.py:38(readRepo)
+    19316    0.626    0.000   11.147    0.001 g:\beurtle\bexml\libBEXML\xmlparserbase.py:234(parseIssues)
+     9657    0.021    0.000    7.530    0.001 g:\beurtle\bexml\libBEXML\parsers\redmine_issues.py:163(_XMLIssue)
+96570/57942    0.175    0.000    6.536    0.000 g:\beurtle\bexml\libBEXML\issue.py:178(__setattr__)
+293247/67599    0.658    0.000    6.379    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:222(__setattr__)
+     9657    0.093    0.000    5.874    0.001 g:\beurtle\bexml\libBEXML\parsers\redmine_issues.py:108(element)
+     9351    0.147    0.000    5.225    0.001 g:\beurtle\bexml\libBEXML\parsers\redmine_issues.py:34(__init__)
+187020/121563    0.367    0.000    3.145    0.000 g:\beurtle\bexml\libBEXML\comment.py:148(__setattr__)
+    28971    0.083    0.000    3.133    0.000 g:\beurtle\bexml\libBEXML\issue.py:169(__getattr__)
+     9657    0.402    0.000    2.887    0.000 g:\beurtle\bexml\libBEXML\xmlparserbase.py:132(load)
+    19008    0.556    0.000    2.271    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:187(_load_mostly)
+     9351    0.365    0.000    2.150    0.000 g:\beurtle\bexml\libBEXML\xmlparserbase.py:64(load)
+     9351    0.085    0.000    1.837    0.000 g:\beurtle\bexml\libBEXML\xmlparserbase.py:26(__init__)
+106227/9657    0.142    0.000    1.559    0.000 f:\python27\lib\copy.py:66(copy)
+     9657    0.026    0.000    1.529    0.000 g:\beurtle\bexml\libBEXML\issue.py:86(__copy__)
+     9657    0.280    0.000    1.434    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:127(__copy__)
+    28359    0.230    0.000    1.285    0.000 g:\beurtle\bexml\libBEXML\coerce_datetime.py:8(coerce_datetime)
+     9351    0.149    0.000    1.179    0.000 g:\beurtle\bexml\libBEXML\comment.py:60(__init__)
+   946366    0.978    0.000    1.143    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:119(__lookup)
+    19008    0.166    0.000    1.091    0.000 f:\python27\lib\uuid.py:549(uuid5)
+    19008    0.093    0.000    0.852    0.000 {built-in method strptime}
+    19008    0.415    0.000    0.759    0.000 f:\python27\lib\_strptime.py:295(_strptime)
+    96570    0.294    0.000    0.742    0.000 f:\python27\lib\copy.py:123(_copy_inst)
+     9657    0.077    0.000    0.703    0.000 g:\beurtle\bexml\libBEXML\parsers\redmine_issues.py:61(__mapIDToBE)
+   405594    0.432    0.000    0.590    0.000 {hasattr}
+    74808    0.349    0.000    0.577    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:151(_addProperty)
+    28665    0.070    0.000    0.556    0.000 {method 'find' of 'lxml.etree._Element' objects}
+   321912    0.248    0.000    0.497    0.000 g:\beurtle\bexml\libBEXML\PropertiedDictionary.py:163(_isProperty)
+    19008    0.396    0.000    0.487    0.000 f:\python27\lib\uuid.py:101(__init__)
+    28665    0.073    0.000    0.475    0.000 f:\python27\lib\site-packages\lxml-2.3-py2.7-win32.egg\lxml\_elementpath.py:270(find)
 
 
 

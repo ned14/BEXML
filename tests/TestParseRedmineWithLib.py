@@ -19,7 +19,7 @@ class TestParseRedmineWithLib(TestParseWithLib, unittest.TestCase):
 
     @property
     def repoURI(self):
-        return "http://www.nedproductions.biz/redmine/projects/bexml-test-project/issues.xml?status_id=*&limit=1"+("&key="+nedproductionsRedmineAPIKey if nedproductionsRedmineAPIKey is not None else "")
+        return "http://www.nedproductions.biz/redmine?project_id=bexml-test-project&limit=1"+("&key="+nedproductionsRedmineAPIKey if nedproductionsRedmineAPIKey is not None else "")
 
     @property
     def filter(self):

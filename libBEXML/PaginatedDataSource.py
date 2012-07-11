@@ -3,10 +3,12 @@
 # (C) 2012 Niall Douglas http://www.nedproductions.biz/
 # Created: April 2012
 
-import urllib3, URI
+import urllib3, URI, logging
 from collections import Iterator
 from multiprocessing.pool import ThreadPool, ApplyResult
 from lxml import etree
+
+log=logging.getLogger(__name__)
 
 class AutoPageCount:
     """A callable returning a monotonic count. You can construct using the initial count"""
@@ -68,6 +70,7 @@ class PaginatedDataSource(Iterator):
             else:
                 self.__data[slot]=None
         except Exception, e:
+            log.error("Error in thread: %s" % repr(e))
             self.__data[slot]=e
 
     def __fillData(self):
@@ -91,9 +94,12 @@ class PaginatedDataSource(Iterator):
 
     def close(*args):
         # lxml seems to call us as close(self, ...) rather than self.close(...)
-        args[0].__page=-1
-        args[0].__data=[]
-        args[0].__threadpool=None
+        self=args[0]
+        self.__page=-1
+        self.__threadpool.close()
+        self.__threadpool.join()
+        self.__data=[]
+        self.__threadpool=None
 
     def read(*args):
         # lxml seems to call us as read(self, ...) rather than self.read(...)

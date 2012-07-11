@@ -28,7 +28,7 @@ class BEXMLIssue(XMLIssue):
         XMLIssue.element.fset(self, value)
         for valueelem in self.element.findall("comment"):
             if valueelem.tag=="comment":
-                self.addComment(BEXMLComment(self, valueelem))
+                self._addComment(BEXMLComment(self, valueelem))
 
 
 class BEXMLParser(XMLParser):

@@ -88,23 +88,24 @@ class BEDirIssue(IssueBase):
         stat=self.__getStat()
         return stat.values!=self.stat.values
 
-    def addComment(self, dirpath):
-        """Adds a comment to the issue"""
+    def _addComment(self, dirpath):
+        """Internally used to add a comment to the issue during load"""
         temp1=self.isLoaded
         comment=BEDirComment(self, dirpath, self.encoding)
         try:
             self.isLoaded=True
             comment.isLoaded=True
-            return IssueBase.addComment(self, comment)
+            return IssueBase._addComment(self, comment)
         finally:
             comment.isLoaded=False
             self.isLoaded=temp1
 
-    def removeComment(self, comment):
+    def _removeComment(self, comment):
+        """Internally used to removes a comment from the issue during save"""
         temp=self.isLoaded
         try:
             self.isLoaded=True
-            return IssueBase.removeComment(self, comment)
+            return IssueBase._removeComment(self, comment)
         finally:
             self.isLoaded=temp
 
@@ -162,7 +163,7 @@ class BEDirParser(ParserBase):
         if os.path.exists(commentspath):
             comments=filter(self.uuid_match.match, os.listdir(commentspath))
             for comment in comments:
-                bugitem.addComment(os.path.join(commentspath, comment))
+                bugitem._addComment(os.path.join(commentspath, comment))
         return bugitem
         
     def reload(self):

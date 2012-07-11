@@ -157,17 +157,16 @@ class TestParseWithLib():
         print("That's %f issues/sec and %f comments/sec" % (issuessec, commentssec))
 
         print("\nIssues reported by anyone called %s:" % self.filter)
-        timings=readRepo(parser, filter="{{reporter}}:{{%s}}" % self.filter)
+        timings=readRepo(parser, filter="{{reporter}}:{{%s}}" % self.filter, printSummaries=True)
         print("Reading %d issues from the repository took %f secs to parse and %f secs to load" % (timings.issues, timings.issueparse, timings.issueload))
 
 
 if TestParseWithLib.profileEverything:
-    try:
+    if os.path.exists("cProfile"):
         os.remove("cProfile")
-    except: pass
-    try:
-        if line_profiler is None:
+    if line_profiler is None:
+        if os.path.exists("cProfile.txt"):
             os.remove("cProfile.txt")
-        else:
+    else:
+        if os.path.exists("lineProfile.txt"):
             os.remove("lineProfile.txt")
-    except: pass

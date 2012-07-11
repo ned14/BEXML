@@ -33,6 +33,7 @@
         <xs:element minOccurs="0" ref="custom_fields"/>
         <xs:element ref="created_on"/>
         <xs:element ref="updated_on"/>
+        <xs:element minOccurs="0" ref="relations"/>
       </xs:sequence>
     </xs:complexType>
     <xs:key name="issue_id">
@@ -121,4 +122,21 @@
   <xs:element name="value" type="xs:string"/>
   <xs:element name="created_on" type="xs:dateTime"/>
   <xs:element name="updated_on" type="xs:dateTime"/>
+  <xs:element name="relations">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" maxOccurs="unbounded" ref="relation"/>
+      </xs:sequence>
+      <xs:attribute name="type" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="relation">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="value"/>
+      </xs:sequence>
+      <xs:attribute name="id" use="required" type="xs:integer"/>
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
 </xs:schema>

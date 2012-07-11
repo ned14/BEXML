@@ -70,6 +70,7 @@ class Issue(PropertiedDictionary):
         self.__dirty=False
         self.__trackStaleness=False
         self.__extra={}
+        self.__comments={}
         self._addProperty("uuid", "The uuid of the issue", lambda x: x if isinstance(x, UUID) else UUID(x), self.nullUUID)
         self._addProperty("short-name", "The short name of the issue", str, "")
         self._addProperty("severity", "The severity of the issue", self.__coerce_severity, "")
@@ -80,12 +81,11 @@ class Issue(PropertiedDictionary):
         self._addProperty("time", "When this issue was created", coerce_datetime, self.nullDatetime)
         self._addProperty("extra-strings", "Additional tags on the issue", str, "")
         self._addProperty("summary", "Summary of the issue", unicode, u"")
-        self.comments={}
         self._load(*entries, **args)
 
     def __copy__(self):
         ret=PropertiedDictionary.__copy__(self)
-        ret.comments={}
+        ret.__comments={}
         return ret
 
     def __coerce_severity(self, v):
@@ -140,20 +140,28 @@ class Issue(PropertiedDictionary):
     def extraFields(self, value):
         self.__extra=value
 
-    def addComment(self, comment):
-        """Adds a comment to the issue"""
+    @property
+    def comments(self):
+        """Returns a dictionary mapping comment UUIDs to comment instances"""
+        return self.__comments
+    @comments.setter
+    def comments(self, value):
+        self.__comments=value
+
+    def _addComment(self, comment):
+        """Internally used to add a comment to the issue during load"""
         assert isinstance(comment, Comment)
-        self.comments[comment.uuid]=comment
+        self.__comments[comment.uuid]=comment
         return comment
 
-    def removeComment(self, comment):
-        """Removes a comment from the issue"""
+    def _removeComment(self, comment):
+        """Internally used to removes a comment from the issue during save"""
         if isinstance(comment, str):
             comment=UUID(comment)
         if isinstance(comment, UUID):
-            del self.comments[comment]
+            del self.__comments[comment]
         elif isinstance(comment, Comment):
-            del self.comments[comment.uuid]
+            del self.__comments[comment.uuid]
         else:
             raise LookupError, "comment is not a string, uuid or comment"
 
@@ -167,7 +175,7 @@ class Issue(PropertiedDictionary):
             self.load()
         return PropertiedDictionary.__getitem__(self, name)
     def __getattr__(self, name):
-        if self._isProperty(name) and not self.isLoaded:
+        if self._isProperty(name) and not self.isLoaded and name is not 'uuid':
             self.load()
         return PropertiedDictionary.__getattr__(self, name)
 

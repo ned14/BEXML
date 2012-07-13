@@ -48,56 +48,56 @@ class PropertiedDictionary(dict, object):
     
     >>> x=PropertiedDictionary()
     >>> print x
-    PropertiedDictionary: {}
+    {'Object': {}, 'PropertiedDictionary': {}}
     >>> x._addProperty("foo", "I'm a foo", int, 5)
     >>> print x
-    PropertiedDictionary: {'foo': <type 'int'> 5}
+    {'Object': {}, 'PropertiedDictionary': {'foo': <type 'int'> 5}}
     >>> x.foo=6
     >>> print x
-    PropertiedDictionary: {'foo': <type 'int'> 6}
+    {'Object': {}, 'PropertiedDictionary': {'foo': <type 'int'> 6}}
     >>> x.g=6
     >>> print x
-    PropertiedDictionary: {'foo': <type 'int'> 6}
+    {'Object': {'g': 6}, 'PropertiedDictionary': {'foo': <type 'int'> 6}}
     >>> x.foo="8"
     >>> print x
-    PropertiedDictionary: {'foo': <type 'int'> 8}
+    {'Object': {'g': 6}, 'PropertiedDictionary': {'foo': <type 'int'> 8}}
     >>> x.foo="Niall"
     Traceback (most recent call last):
         ...
     ValueError: invalid literal for int() with base 10: 'Niall'
     >>> del x.foo
     >>> print x
-    PropertiedDictionary: {'foo': <type 'int'> 5}
+    {'Object': {'g': 6}, 'PropertiedDictionary': {'foo': <type 'int'> 5}}
     >>> x._removeProperty("foo")
     >>> print x
-    PropertiedDictionary: {}
+    {'Object': {'g': 6}, 'PropertiedDictionary': {}}
     >>> x._addProperty("reply-to", default="I am read only")
     >>> print x
-    PropertiedDictionary: {'reply-to': <type 'str'> RO 'I am read only'}
+    {'Object': {'g': 6}, 'PropertiedDictionary': {'reply-to': <type 'str'> RO 'I am read only'}}
     >>> x.reply_to="Niall"
     Traceback (most recent call last):
         ...
     AttributeError: Property is read-only
     >>> x._removeProperty("reply-to")
     >>> print x
-    PropertiedDictionary: {}
+    {'Object': {'g': 6}, 'PropertiedDictionary': {}}
     >>> x._addProperty("reply-to", coercer=lambda x: x)
     >>> print x
-    PropertiedDictionary: {'reply-to': None}
+    {'Object': {'g': 6}, 'PropertiedDictionary': {'reply-to': None}}
     >>> x.reply_to="Niall"
     >>> print x
-    PropertiedDictionary: {'reply-to': 'Niall'}
+    {'Object': {'g': 6}, 'PropertiedDictionary': {'reply-to': 'Niall'}}
     >>> x._addProperty("foo", "I'm a foo", int, 5)
     >>> x._reset()
     >>> print x
-    PropertiedDictionary: {'reply-to': None, 'foo': <type 'int'> 5}
+    {'Object': {'g': 6}, 'PropertiedDictionary': {'reply-to': None, 'foo': <type 'int'> 5}}
     >>> x._load(foo="3", reply_to="Not me!")
     >>> print x
-    PropertiedDictionary: {'reply-to': 'Not me!', 'foo': <type 'int'> 3}
+    {'Object': {'g': 6}, 'PropertiedDictionary': {'reply-to': 'Not me!', 'foo': <type 'int'> 3}}
     >>> print x._load_mostly({'foo': "88", 'reply_to':"Hello", 'boo':43})
     {'boo': 43}
     >>> print x
-    PropertiedDictionary: {'reply-to': 'Hello', 'foo': <type 'int'> 88}
+    {'Object': {'g': 6}, 'PropertiedDictionary': {'reply-to': 'Hello', 'foo': <type 'int'> 88}}
     >>> del x
     >>> class Foo(PropertiedDictionary):
     ...     def __init__(self):
@@ -201,7 +201,7 @@ class PropertiedDictionary(dict, object):
         return ret
 
     def __repr__(self):
-        return "PropertiedDictionary: "+dict.__repr__(self)
+        return "{'Object': "+repr(vars(self))+", 'PropertiedDictionary': "+dict.__repr__(self)+"}"
 
     def __getitem__(self, name):
         p=self.__lookup(name)

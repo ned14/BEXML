@@ -47,7 +47,7 @@ def readRepo(parser, forceLoad=False, printSummaries=False, filter=None):
         if printSummaries:
             print(repr("  "+str(issue.uuid)+": "+issue.summary))
             for commentuuid in issue.comments:
-                print(repr("    * "+str(commentuuid)+": "+issue.comments[commentuuid].body))
+                print(repr("    c "+str(commentuuid)+": "+issue.comments[commentuuid].body[:48]))
     end=time.time()
     issueparsetaken+=end-start-emptyloop
     if forceLoad:
@@ -145,14 +145,16 @@ class TestParseWithLib():
         else: commentssec=0
         print("That's %f issues/sec and %f comments/sec" % (issuessec, commentssec))
 
-        timings=readRepo(parser)
-        print("Reading %d issues from the repository for the second time took %f secs to parse and %f secs to load" % (timings.issues, timings.issueparse, timings.issueload))
-        print("Reading %d comments from the repository for the second time took %f secs to parse and %f secs to load" % (timings.comments, timings.commentparse, timings.commentload))
-        issuessec=timings.issues
-        if timings.issueparse+timings.issueload!=0: issuessec/=(timings.issueparse+timings.issueload)
+        timings2=readRepo(parser)
+        self.assertEqual(timings.issues, timings2.issues)
+        self.assertEqual(timings.comments, timings2.comments)
+        print("Reading %d issues from the repository for the second time took %f secs to parse and %f secs to load" % (timings2.issues, timings2.issueparse, timings2.issueload))
+        print("Reading %d comments from the repository for the second time took %f secs to parse and %f secs to load" % (timings2.comments, timings2.commentparse, timings2.commentload))
+        issuessec=timings2.issues
+        if timings2.issueparse+timings2.issueload!=0: issuessec/=(timings2.issueparse+timings2.issueload)
         else: issuessec=0
-        commentssec=timings.comments
-        if timings.commentparse+timings.commentload!=0: commentssec/=(timings.commentparse+timings.commentload)
+        commentssec=timings2.comments
+        if timings2.commentparse+timings2.commentload!=0: commentssec/=(timings2.commentparse+timings2.commentload)
         else: commentssec=0
         print("That's %f issues/sec and %f comments/sec" % (issuessec, commentssec))
 

@@ -4,7 +4,7 @@
 
 from ..xmlparserbase import XMLComment, XMLIssue, XMLParser
 
-import os, logging
+import os, logging, uuid
 from copy import copy, deepcopy
 
 log=logging.getLogger(__name__)
@@ -21,7 +21,7 @@ class BEXMLIssue(XMLIssue):
     """An issue loaded from an XML based BE repo"""
 
     def __init__(self, parser, bugelem):
-        XMLIssue.__init__(self, parser, bugelem, mapToBE={'created':('time', lambda xmlelem:xmlelem.text), 'extra-string':('extra-strings', lambda xmlelem:xmlelem.text)}, dontprocess=set(['comment']))
+        XMLIssue.__init__(self, parser, bugelem, mapToBE={'created':('time', lambda xmlelem:xmlelem if isinstance(xmlelem, str) else xmlelem.text), 'extra-string':('extra-strings', lambda xmlelem:xmlelem if isinstance(xmlelem, str) else xmlelem.text)}, dontprocess=set(['comment']))
 
     @XMLIssue.element.setter
     def element(self, value):

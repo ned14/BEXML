@@ -38,13 +38,28 @@ class XMLComment(CommentBase):
         Content-type: mimetype string
         body: string
         """
-        if mapFromBE is None: mapFromBe={v[0]:(k, v[1]) for k, v in mapToBE.iteritems()}
+        if mapFromBE is None: mapFromBE={v[0]:(k, v[1]) for k, v in mapToBE.iteritems()}
         CommentBase.__init__(self, parentIssue)
         self.__element=commentelem
         self.__elementhash=0
         self.__mapToBE=mapToBE
         self.__dontprocess=dontprocess
         self.__mapFromBE=mapFromBE
+        self.__setUUID()
+
+    def __setUUID(self):
+        if self.__element is None:
+            self.uuid=UUID(int=0)
+        else:
+            # Find the tag mapping to uuid and set it
+            done=False
+            for k, v in self.__mapToBE.iteritems():
+                if v[0]=='uuid':
+                    self.uuid=v[1](self.__element.find(k))
+                    done=True
+                    break
+            if not done:
+                self.uuid=UUID(self.__element.find('uuid').text)
 
     @property
     def isStale(self):
@@ -60,6 +75,7 @@ class XMLComment(CommentBase):
     @element.setter
     def element(self, value):
         self.__element=value
+        self.__setUUID()
 
     def load(self, reload=False):
         """Loads in the comment from XML"""
@@ -105,13 +121,28 @@ class XMLIssue(IssueBase):
         summary: string
         [extra-strings]: list of strings
         """
-        if mapFromBE is None: mapFromBe={v[0]:(k, v[1]) for k, v in mapToBE.iteritems()}
+        if mapFromBE is None: mapFromBE={v[0]:(k, v[1]) for k, v in mapToBE.iteritems()}
         IssueBase.__init__(self, parser)
         self.__element=bugelem
         self.__elementhash=0
         self.__mapToBE=mapToBE
         self.__dontprocess=dontprocess
         self.__mapFromBE=mapFromBE
+        self.__setUUID()
+
+    def __setUUID(self):
+        if self.__element is None:
+            self.uuid=UUID(int=0)
+        else:
+            # Find the tag mapping to uuid and set it
+            done=False
+            for k, v in self.__mapToBE.iteritems():
+                if v[0]=='uuid':
+                    self.uuid=v[1](self.__element.find(k))
+                    done=True
+                    break
+            if not done:
+                self.uuid=UUID(self.__element.find('uuid').text)
 
     @property
     def isStale(self):
@@ -127,6 +158,7 @@ class XMLIssue(IssueBase):
     @element.setter
     def element(self, value):
         self.__element=value
+        self.__setUUID()
 
     #@lineprofile
     def load(self, reload=False):
@@ -194,7 +226,7 @@ class XMLParser(ParserBase):
 
         bug: XMLIssue
         """
-        if mapFromBE is None: mapFromBe={v:k for k, v in mapToBE.iteritems()}
+        if mapFromBE is None: mapFromBE={v:k for k, v in mapToBE.iteritems()}
         ParserBase.__init__(self, uri)
         self.__mapToBE=mapToBE
         self.__mapFromBE=mapFromBE
@@ -238,6 +270,7 @@ class XMLParser(ParserBase):
             tag='bug' if 'bug' not in self.__mapToBE else self.__mapToBE['bug']
             for _, bugelem in etree.iterparse(self.source, tag=tag, schema=self.xml_schema):
                 issue=self._XMLIssue(bugelem)
+                assert issue.uuid!=UUID(int=0)
                 self.bugs[issue.uuid]=issue
                 if issuefilter is None or issue._match(issuefilter):
                     yield issue

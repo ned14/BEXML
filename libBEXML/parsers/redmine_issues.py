@@ -6,7 +6,7 @@ from ..xmlparserbase import XMLComment, XMLIssue, XMLParser
 from .. import PaginatedDataSource
 from ..URI import URI
 
-import os, logging, uuid, urllib3
+import os, logging, uuid, urllib3, traceback
 from multiprocessing.pool import ThreadPool, ApplyResult
 from copy import copy, deepcopy
 from lxml import etree
@@ -17,6 +17,21 @@ log=logging.getLogger(__name__)
 class RedmineXMLComment(XMLComment):
     """A comment loaded from an XML based Redmine repo"""
     uuid_namespace=uuid.UUID('{63913f93-2c8d-4f95-9619-f54f52514ef4}') # Used to generated a unique UUID from unique comment id
+
+    def __mapIDToBE(self, xmlelem):
+        """Maps a Redmine id to BE uuid"""
+        if self.element.tag=="journal":
+            self.__commentType=1
+            self.redmine_id=int(self.element.attrib['id'])
+            self.parentParser.journalids[self.redmine_id]=self
+            ret=uuid.uuid5(self.uuid_namespace, str(self.redmine_id))
+        elif self.element.tag=="issue":
+            self.__commentType=0
+            self.redmine_id=int(self.element.find("id").text)
+            ret=uuid.uuid5(self.parentIssue.uuid_namespace, str(self.redmine_id))
+        else:
+            raise Exception("Unknown comment type '"+self.element.tag+"'")
+        return ret
 
     def __mapBodyToBE(self, xmlelem):
         """Maps a Redmine comment body"""
@@ -35,24 +50,13 @@ class RedmineXMLComment(XMLComment):
 
 
     def __init__(self, parentIssue, commentelem):
-        XMLComment.__init__(self, parentIssue, commentelem, mapToBE={'notes':       ('body',   self.__mapBodyToBE),              # From journal
+        XMLComment.__init__(self, parentIssue, commentelem, mapToBE={'id':          ('uuid',   self.__mapIDToBE),                # From journal and issue
+                                                                     'notes':       ('body',   self.__mapBodyToBE),              # From journal
                                                                      'description': ('body',   self.__mapBodyToBE),              # From issue
                                                                      'user':        ('Author', self.__mapAuthorToBE),            # From journal
                                                                      'author':      ('Author', self.__mapAuthorToBE),            # From issue
                                                                      'created_on':  ('Date',   lambda xmlelem:xmlelem.text),     # From journal and issue
                                                                      }, dontprocess=set())
-        if commentelem.tag=="journal":
-            self.__commentType=1
-            self.redmine_id=int(commentelem.attrib['id'])
-            self.parentParser.journalids[self.redmine_id]=self
-            self.uuid=uuid.uuid5(self.uuid_namespace, str(self.redmine_id))
-        elif commentelem.tag=="issue":
-            self.__commentType=0
-            self.redmine_id=int(commentelem.find("id").text)
-            self.uuid=uuid.uuid5(parentIssue.uuid_namespace, str(self.redmine_id))
-        else:
-            raise Exception("Unknown comment type '"+commentelem.tag+"'")
-        #print("Added comment "+str(self.uuid)+" type "+str(self.__commentType))
 
 
 class RedmineXMLIssue(XMLIssue):
@@ -64,9 +68,19 @@ class RedmineXMLIssue(XMLIssue):
     def __mapIDToBE(self, xmlelem):
         """Maps a Redmine id to BE uuid"""
         self.redmine_id=int(xmlelem.text)
-        assert self.redmine_id not in self.parentParser.issueids
-        self.parentParser.issueids[self.redmine_id]=self
+        if self.redmine_id not in self.parentParser.issueids:
+            self.parentParser.issueids[self.redmine_id]=self
+        else:
+            myself1=self.parentParser.issueids[self.redmine_id]
+            myself2=self
+            myself1id=id(myself1)
+            myself2id=id(myself2)
+            assert myself1==myself2
         return uuid.uuid5(self.uuid_namespace, str(self.redmine_id))
+
+    def __mapIDFromBE(self, data):
+        """Maps a Redmine id from BE uuid"""
+        return str(self.redmine_id)
 
     def __mapStatusToBE(self, xmlelem):
         """Maps a Redmine status to BE status"""
@@ -78,6 +92,10 @@ class RedmineXMLIssue(XMLIssue):
         self.parentParser.issuestatusids[id]=(name, BEname)
         return BEname
 
+    def __mapStatusFromBE(self, data):
+        """Maps a Redmine status from BE status"""
+        raise NotImplementedError()
+
     def __mapPriorityToBE(self, xmlelem):
         """Maps a Redmine priority to BE severity"""
         id=int(xmlelem.attrib['id'])
@@ -87,6 +105,10 @@ class RedmineXMLIssue(XMLIssue):
         BEname=self.mapPriorityToBE[name] if name in self.mapPriorityToBE else ""
         self.parentParser.issuepriorityids[id]=(name, BEname)
         return BEname
+
+    def __mapPriorityFromBE(self, data):
+        """Maps a Redmine priority from BE severity"""
+        raise NotImplementedError()
 
     def __mapAuthorToBE(self, xmlelem):
         """Maps a Redmine author to BE reporter"""
@@ -98,6 +120,10 @@ class RedmineXMLIssue(XMLIssue):
         self.parentParser.issueauthorids[id]=(name, BEname)
         return BEname
 
+    def __mapAuthorFromBE(self, data):
+        """Maps a Redmine author from BE reporter"""
+        raise NotImplementedError()
+
     def __init__(self, parser, bugelem, uri):
         XMLIssue.__init__(self, parser, bugelem, mapToBE={'id'        :('uuid',     self.__mapIDToBE),
                                                           'status'    :('status',   self.__mapStatusToBE),
@@ -105,7 +131,15 @@ class RedmineXMLIssue(XMLIssue):
                                                           'author'    :('reporter', self.__mapAuthorToBE),
                                                           'subject'   :('summary',  lambda xmlelem:xmlelem.text),
                                                           'created_on':('time',     lambda xmlelem:xmlelem.text),
-                                                          }, dontprocess=set(['description']))
+                                                          },
+                          dontprocess=set(['description']),
+                          mapFromBE={'uuid'     :('id',         self.__mapIDFromBE),
+                                     'status'   :('status',     self.__mapStatusFromBE),
+                                     'severity' :('priority',   self.__mapPriorityFromBE),
+                                     'reporter' :('author',     self.__mapAuthorFromBE),
+                                     'summary'  :('subject',    lambda xmlelem:xmlelem),
+                                     'time'     :('created_on', lambda xmlelem:xmlelem),
+                                     })
         self.redmine_id=None
         self.uri=uri
         self.asyncwaiter=None
@@ -117,7 +151,7 @@ class RedmineXMLIssue(XMLIssue):
         if not self.isLoaded:
             waiter=self.asyncwaiter
             while waiter is not None:
-                waiter.wait()
+                waiter.get()
                 waiter=self.asyncwaiter
         return XMLIssue.comments.fget(self)
 
@@ -139,19 +173,24 @@ class RedmineXMLIssue(XMLIssue):
                 return True
             return False
         # Redmine currently doesn't supply the journals element in /issues.xml, but it might in the future
-        if not extractComments(self):
+        if not extractComments(self) and self.uri.scheme!="file":
             # Unfortunately, Redmine requires us to separately fetch the issue detail to get the (number of) comments
             # so fire off a thread worker to get it for me
             def threadWorker(self):
+                response=None
                 try:
-                    response=self.parentParser.httppool.urlopen(self.uri)
+                    response=self.parentParser.httppool.urlopen('GET', str(self.uri))
                     xml=etree.fromstring(response.data)
                     XMLIssue.element.fset(self, xml)
                     extractComments(self)
                     self.asyncwaiter=None
-                except Exception, e:
-                    log.error("Error in thread: %s" % repr(e))
-            self.asyncwaiter=self.parentParser.threadpool.apply_async(threadWorker, [self])
+                except Exception as e:
+                    log.error("Error in thread: %s" % traceback.format_exc())
+                    if response is not None: log.error("Response was %s" % str(response.data))
+                    raise e
+            log.info("Missing comments in main data stream, so fetching issue detail from %s" % str(self.uri))
+            threadWorker(self)
+            #self.asyncwaiter=self.parentParser.threadpool.apply_async(threadWorker, [self])
 
     def load(self, reload=False):
         """Loads in the issue from XML"""
@@ -159,7 +198,7 @@ class RedmineXMLIssue(XMLIssue):
             return
         waiter=self.asyncwaiter
         while waiter is not None:
-            waiter.wait()
+            waiter.get()
             waiter=self.asyncwaiter
         XMLIssue.load(self, reload)
 
@@ -183,7 +222,7 @@ class RedmineXMLParser(XMLParser):
     """
     # The number of comments which can be fetched asynchronously at once
     threadpool=ThreadPool(4)
-    httppool=urllib3.PoolManager(maxsize=4, block=True)
+    httppool=urllib3.PoolManager(maxsize=4, block=True, timeout=10.0)
 
     @classmethod
     def _schemapath(cls):
@@ -209,7 +248,12 @@ class RedmineXMLParser(XMLParser):
                 total_count=getval(data, issuesidx, "total_count")
                 limit=getval(data, issuesidx, "limit")
                 offset=getval(data, issuesidx, "offset")
-                if total_count is None or limit is None or offset is None: raise Exception("Malformed input: %s" % data)
+                if total_count is None:
+                    raise Exception("Malformed input, couldn't find total_count: %s" % data)
+                if limit is None:
+                    raise Exception("Malformed input, couldn't find limit: %s" % data)
+                if offset is None:
+                    raise Exception("Malformed input, couldn't find offset: %s" % data)
                 if offset+limit>=total_count:
                     return None
                 else:
@@ -221,9 +265,10 @@ class RedmineXMLParser(XMLParser):
 
     def _XMLIssue(self, bugelem, **pars):
         ret=copy(self.RedmineXMLIssue)
-        ret.uri=copy(ret.uri)
-        ret.uri.path+="/issues/%s.xml" % bugelem.find("id").text
-        log.info("Opening for issue detail URI %s" % str(ret.uri))
+        myidelem=bugelem.find("id")
+        if ret.uri.scheme!="file":
+            ret.uri=copy(ret.uri)
+            ret.uri.path+="/issues/%d.xml" % int(myidelem.text)
         ret.element=bugelem
         return ret
 
@@ -242,7 +287,7 @@ class RedmineXMLParser(XMLParser):
         issueuri=copy(uri)
         if uri.scheme!="file":
             del issueuri.query['project_id'], issueuri.query['limit'], issueuri.query['status_id']
-        issueuri.query['include']='children,attachments,relations,changesets,journals'
+            issueuri.query['include']='children,attachments,relations,changesets,journals'
         self.RedmineXMLIssue=RedmineXMLIssue(self, None, issueuri)
 
     def try_location(self, mimetype=None, first256bytes=None):

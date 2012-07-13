@@ -180,20 +180,20 @@ class Issue(PropertiedDictionary):
         return PropertiedDictionary.__getattr__(self, name)
 
     def __setitem__(self, name, value):
-        if self._isProperty(name) and not self.isLoaded:
+        if self._isProperty(name) and not self.isLoaded and name is not 'uuid':
             self.load()
         return PropertiedDictionary.__setitem__(self, name, value)
     def __setattr__(self, name, value):
-        if self._isProperty(name) and not self.isLoaded:
+        if self._isProperty(name) and not self.isLoaded and name is not 'uuid':
             self.load()
         return PropertiedDictionary.__setattr__(self, name, value)
 
     def __delitem__(self, name):
-        if self._isProperty(name) and not self.isLoaded:
+        if self._isProperty(name) and not self.isLoaded and name is not 'uuid':
             self.load()
         return PropertiedDictionary.__delitem__(self, name)
     def __delattr__(self, name):
-        if self._isProperty(name) and not self.isLoaded:
+        if self._isProperty(name) and not self.isLoaded and name is not 'uuid':
             self.load()
         return PropertiedDictionary.__delattr__(self, name)
 

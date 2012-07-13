@@ -3,7 +3,7 @@
 # (C) 2012 Niall Douglas http://www.nedproductions.biz/
 # Created: April 2012
 
-import urllib3, URI, logging
+import urllib3, URI, logging, traceback
 from collections import Iterator
 from multiprocessing.pool import ThreadPool, ApplyResult
 from lxml import etree
@@ -60,7 +60,7 @@ class PaginatedDataSource(Iterator):
             prevdata=self.__data[slot-1] if slot>0 else None
             # Should never happen, but be defensive anyway ...
             if isinstance(prevdata, ApplyResult):
-                prevdata.wait()
+                prevdata.wait() # deliberately not get() to not throw exceptions
                 assert prevdata.ready()
                 prevdata=self.__data[slot-1]
             offset=self.__analysisfunct(prevdata)
@@ -69,8 +69,8 @@ class PaginatedDataSource(Iterator):
                 self.__data[slot]=self.__httppool.request(self.__http_op, self.__request, fields)
             else:
                 self.__data[slot]=None
-        except Exception, e:
-            log.error("Error in thread: %s" % repr(e))
+        except Exception as e:
+            log.error("Error in thread: %s" % traceback.format_exc())
             self.__data[slot]=e
 
     def __fillData(self):
@@ -85,8 +85,7 @@ class PaginatedDataSource(Iterator):
         idx=self.__dataptr+idxoffset
         ret=self.__data[idx]
         while isinstance(ret, ApplyResult):
-            ret.wait(self.__timeout)
-            if not ret.ready(): raise Exception("Timed out waiting for HTTP response")
+            ret.get(self.__timeout)
             ret=self.__data[idx]
         if isinstance(ret, Exception):
             raise ret

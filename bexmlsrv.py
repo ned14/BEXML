@@ -6,12 +6,13 @@
 from libBEXML import BEXML, parserbase
 import web, urlparse, os, inspect, logging, sys, traceback, types, collections
 import omnijson as json
-from mimerender import mimerender
+import mimerender as _mimerender
 from cgi import escape
 from uuid import UUID
 
 DEBUG=True
 
+mimerender = _mimerender.WebPyMimeRender()
 web.config.debug = False
 web.config.session_parameters['timeout'] = 5*60     # 5 minutes, then expire the session
 logging.basicConfig(level=logging.WARN)
